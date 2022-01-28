@@ -2,7 +2,7 @@
 lock '3.16.0'
 
 # Capistranoのログの表示に利用する
-set :application, 'Otrio'
+set :application, 'otrio'
 
 # どのリポジトリからアプリをpullするかを指定する
 set :repo_url,  'git@github.com:polotomato/otrio.git'
