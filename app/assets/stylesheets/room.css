@@ -1,0 +1,25 @@
+.header {
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: aquamarine;
+}
+
+.main-container {
+  height: calc(100vh - 50px);
+  background-color: red;
+  display: flex;
+  justify-content: space-between;
+}
+
+.board, .lobby {
+  height: 90%;
+  background-color:lightgoldenrodyellow
+}
+
+.chat-container {
+  height: 80%;
+  width: 400px;
+  background-color: darksalmon;
+}
