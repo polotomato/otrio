@@ -1,13 +1,17 @@
 <section class="vh-100" style="background-color: #eee;">
-  
-  <h1>Rooms#index</h1>
-  <div class="rooms"></div>
-  <p>Find me in app/views/rooms/index.html.erb</p>
-  <%= link_to "Log out", destroy_user_session_path, method: :delete %>
-  <br>
+  <div class="header">
+    <div><%= "Header is here." %></div>
+    <div><%= link_to "Log out", destroy_user_session_path, method: :delete %></div>
+  </div>
+  <div class="main-container">
+    <div class="container-fluid	board">
+      <%= render partial: 'rooms/nine_rooms', locals: { rooms: @rooms } %>
+    </div>
+    <div class="chat-container">
+      <% unless @messages.nil? %>
+        <%= render @messages %>
+      <% end %>
+    </div>
+  </div>
   <%#= render "games/board" %>
-
-  <%= render partial: 'rooms/show_rooms', locals: { rooms: @rooms } %>
-
-
 </section>
