@@ -7,7 +7,7 @@
     <div class="container-fluid	board">
       <%= render partial: 'rooms/nine_rooms', locals: { rooms: @rooms } %>
     </div>
-    <div class="chat-container">
+    <div class="chat-container" id="messages">
       <% unless @messages.nil? %>
         <%= render @messages %>
       <% end %>
