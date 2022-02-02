@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  root 'rooms#top'
   devise_for :users, path: ''
-  root 'rooms#index'
+  resources :rooms, only: [:index, :show]
 end
