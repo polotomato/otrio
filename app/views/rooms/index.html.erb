@@ -7,12 +7,20 @@
     <div class="container-fluid	board">
       <%= render partial: 'rooms/nine_rooms', locals: { rooms: @rooms } %>
     </div>
-    <div class="chat-container" id="messages">
-      <% unless @messages.nil? %>
-        <%= render @messages %>
-      <% end %>
-      <%= label_tag :content, 'Say something:' %>
-      <%= text_field_tag :content, nil, data: { behavior: 'room_speaker' } %>
+    <div class="chat-container">
+      <div class="chat-lists" id="messages">
+        <% unless @messages.nil? %>
+          <%= render @messages %>
+        <% end %>
+      </div>
+      <div class="chat-input-container">
+        <div class="d-flex flex-row align-items-center mb-4">
+          <i class="fas fa-comment-dots fa-lg me-2 ms-2"></i>
+          <div class="form-outline flex-fill mb-0">
+            <%= text_field_tag :content, nil, data: { behavior: 'room_speaker' } %>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
   <%#= render "games/board" %>

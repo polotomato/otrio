@@ -1,7 +1,7 @@
 class MessageBroadcastJob < ApplicationJob
   queue_as :default
 
-  def perform_later(message)
+  def perform(message)
     ActionCable.server.broadcast 'room_channel', message: render_message(message)
   end
 
