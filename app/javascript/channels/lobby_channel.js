@@ -2,8 +2,8 @@ import consumer from "./consumer"
 
 // $(function() { ... }); で囲むことでレンダリング後に実行される
 $(function() {
-  if ( $('#in_room').length !== 0 ){
-    const chatChannel = consumer.subscriptions.create({ channel: 'RoomChannel', room: $('#in_room').data('room_id') }, {
+  if ( $('#in_lobby').length !== 0 ){
+    const chatChannel = consumer.subscriptions.create("LobbyChannel", {
       connected() {
         // Called when the subscription is ready for use on the server
       },
@@ -13,7 +13,9 @@ $(function() {
       },
 
       received: function(data) {
-        return $('#chat-lists').append(data['message']);
+        $('#chat-lists').append(data['message']);
+        const objChat = $('#chat-lists');
+        objChat.scrollTop(objChat[0].scrollHeight);
       },
 
       speak: function(message) {

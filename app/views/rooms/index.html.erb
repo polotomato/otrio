@@ -1,27 +1,17 @@
 <section class="vh-100" style="background-color: #eee;">
-  <div class="header">
-    <div><%= "Header is here." %></div>
-    <div><%= link_to "Log out", destroy_user_session_path, method: :delete %></div>
+  <div id="in_lobby">
+    <div class="header">
+      <div>
+        まだチャット機能しかないよ！
+      </div>
+      <div class="col-md-3 text-end">
+        <%= button_to 'Logout', destroy_user_session_path, method: :delete, class: "btn btn-outline-danger me-2" %>
+      </div>
+    </div>
   </div>
-  <div class="main-container">
-    <div class="container-fluid	board">
+    <div class="main-container">
       <%= render partial: 'rooms/nine_rooms', locals: { rooms: @rooms } %>
-    </div>
-    <div class="chat-container">
-      <div class="chat-lists" id="messages">
-        <% unless @messages.nil? %>
-          <%= render @messages %>
-        <% end %>
-      </div>
-      <div class="chat-input-container">
-        <div class="d-flex flex-row align-items-center mb-4">
-          <i class="fas fa-comment-dots fa-lg me-2 ms-2"></i>
-          <div class="form-outline flex-fill mb-0">
-            <%= text_field_tag :content, nil, data: { behavior: 'room_speaker' } %>
-          </div>
-        </div>
-      </div>
+      <%= render partial: "rooms/chat_side_bar", locals: { messages: @messages }  %>
     </div>
   </div>
-  <%#= render "games/board" %>
 </section>

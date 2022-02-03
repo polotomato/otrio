@@ -1,8 +1,8 @@
 .header {
   height: 50px;
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
   background-color: aquamarine;
 }
 
@@ -14,7 +14,7 @@
 }
 
 .board, .lobby {
-  height: 90%;
+  height: 100%;
   background-color: lightgoldenrodyellow
 }
 
@@ -24,7 +24,6 @@
   background-color: darksalmon;
   display: flex;
   flex-direction: column;
-  /* justify-content: space-between; */
 }
 
 .chat-lists {
@@ -32,6 +31,8 @@
   margin-left: 5px;
   margin-bottom: 5px;
   background-color: lightgreen;
+  display: flex;
+  flex-direction: column;
   overflow-y: scroll;
   word-break: break-all;
 }
