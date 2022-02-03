@@ -1,17 +1,17 @@
 <section class="vh-100" style="background-color: #eee;">
-  <div class="header">
-    <div><%= "Header is here." %></div>
-    <div><%= link_to "Log out", destroy_user_session_path, method: :delete %></div>
+  <div id="in_lobby">
+    <div class="header">
+      <div>
+        まだチャット機能しかないよ！
+      </div>
+      <div class="col-md-3 text-end">
+        <%= button_to 'Logout', destroy_user_session_path, method: :delete, class: "btn btn-outline-danger me-2" %>
+      </div>
+    </div>
   </div>
-  <div class="main-container">
-    <div class="container-fluid	board">
+    <div class="main-container">
       <%= render partial: 'rooms/nine_rooms', locals: { rooms: @rooms } %>
-    </div>
-    <div class="chat-container">
-      <% unless @messages.nil? %>
-        <%= render @messages %>
-      <% end %>
+      <%= render partial: "rooms/chat_side_bar", locals: { messages: @messages }  %>
     </div>
   </div>
-  <%#= render "games/board" %>
 </section>

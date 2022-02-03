@@ -1,7 +1,9 @@
-<div class="header">
- <div><%= "Header is here. and here is Room #{@room.id}" %></div>
-</div>
-<div class="main-container">
-  <div class="container-fluid	board"></div>
-  <div class="chat-container"></div>
+<div id="in_room" data-room_id="<%= @room.id %>">
+  <div class="header">
+  <div><%= "Header is here. and here is Room #{@room.id}" %></div>
+  </div>
+  <div class="main-container">
+    <div class="container-fluid	board"></div>
+    <div class="chat-container"></div>
+  </div>
 </div>

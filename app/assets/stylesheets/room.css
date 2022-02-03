@@ -1,8 +1,8 @@
 .header {
   height: 50px;
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
   background-color: aquamarine;
 }
 
@@ -14,12 +14,31 @@
 }
 
 .board, .lobby {
-  height: 90%;
-  background-color:lightgoldenrodyellow
+  height: 100%;
+  background-color: lightgoldenrodyellow
 }
 
 .chat-container {
-  height: 80%;
+  height: 100%;
   width: 400px;
   background-color: darksalmon;
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-lists {
+  height: 100%;
+  margin-left: 5px;
+  margin-bottom: 5px;
+  background-color: lightgreen;
+  display: flex;
+  flex-direction: column;
+  overflow-y: scroll;
+  word-break: break-all;
+}
+
+.chat-input-container {
+  height: auto;
+  margin-left: 5px;
+  background-color: royalblue;
 }
