@@ -1,7 +1,7 @@
 <div class="header mb-1">
   <%# ロビーならロー専用のタイトルを表示 %>
   <% if room.nil? %>
-    <div>まだチャット機能しかないよ</div>
+    <div>Here is lobby</div>
   <% else %>
     <%# ルーム内なら部屋番号を表示 %>
     <div><%= "Here is Room #{room.id}" %></div>

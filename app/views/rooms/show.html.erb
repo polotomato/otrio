@@ -1,7 +1,9 @@
-<div id="in_room" data-room_id="<%= @room.id %>">
-  <%= render partial: 'rooms/header', locals: { room: @room } %>
-  <div class="main-container">
-    <div class="container-fluid	board"></div>
-    <%= render partial: "rooms/chat_side_bar", locals: { messages: @messages }  %>
+<section class="vh-100" style="background-color: #eee;">
+  <div id="in_room" data-room_id="<%= @room.id %>">
+    <%= render partial: 'rooms/header', locals: { room: @room } %>
+    <div class="main-container">
+      <div class="container-fluid	board"></div>
+      <%= render partial: "rooms/chat_side_bar", locals: { messages: @messages }  %>
+    </div>
   </div>
-</div>
+</section>
