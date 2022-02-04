@@ -3,5 +3,5 @@ class Message < ApplicationRecord
                       length: { minimum: 1, maximum: 200 }
   belongs_to :user
 
-  after_create_commit { MessageBroadcastJob.perform_later self }
+  after_create_commit { MessageBroadcastJob.perform_later self.content, self.user.nickname }
 end

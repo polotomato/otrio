@@ -1,14 +1,6 @@
-.header {
-  height: 50px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: aquamarine;
-}
-
 .main-container {
   height: calc(100vh - 50px);
-  background-color: red;
+  /* background-color: red; */
   display: flex;
   justify-content: space-between;
 }
@@ -21,7 +13,7 @@
 .chat-container {
   height: 100%;
   width: 400px;
-  background-color: darksalmon;
+  /* background-color: darksalmon; */
   display: flex;
   flex-direction: column;
 }
@@ -30,7 +22,7 @@
   height: 100%;
   margin-left: 5px;
   margin-bottom: 5px;
-  background-color: lightgreen;
+  background-color:skyblue;
   display: flex;
   flex-direction: column;
   overflow-y: scroll;

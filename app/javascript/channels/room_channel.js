@@ -13,7 +13,9 @@ $(function() {
       },
 
       received: function(data) {
-        return $('#chat-lists').append(data['message']);
+        $('#chat-lists').append(data['message']);
+        const objChat = $('#chat-lists');
+        objChat.scrollTop(objChat[0].scrollHeight);
       },
 
       speak: function(message) {

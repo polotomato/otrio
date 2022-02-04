@@ -1,7 +1,9 @@
 <div class="chat-container">
   <div class="chat-lists" id="chat-lists">
     <% unless messages.nil? %>
-      <%= render messages %>
+      <% messages.each do |message| %>
+        <%= render partial: 'messages/message', locals: { message: message.content, user_nickname: message.user.nickname } %>
+      <% end %>
     <% end %>
   </div>
   <div class="chat-input-container">
