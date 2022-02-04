@@ -1,7 +1,8 @@
 <div class="container-fluid	board">
   <% rooms.each do |room| %>
-    <div class="mb-4">
-      <%= link_to "Room #{room.id}", room_path(room.id) %>
+    <div class="mb-4 bg-light w-25">
+      <p><%= link_to "Room #{room.id}", room_path(room.id) %></p>
+      <p><%= "X of #{room.users.size} players are in the game" %></p>
     </div>
   <% end %>
 </div>

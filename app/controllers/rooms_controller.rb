@@ -5,7 +5,7 @@ class RoomsController < ApplicationController
   end
   
   def index
-    @rooms = Room.all
+    @rooms = Room.includes(:users)
     @messages = Message.includes(:user).order("id DESC").limit(20)
     @messages = @messages.sort_by { |v| v.created_at }
   end
