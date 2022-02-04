@@ -1,3 +1,7 @@
 <div class='message'>
-  <p><%= "#{message.user.nickname} : #{message.content}" %></p>
+  <% if user_nickname.nil? %>
+    <p><%= message %></p>
+  <% else %>
+    <p><%= "#{user_nickname} : #{message}" %></p>
+  <% end %>
 </div>

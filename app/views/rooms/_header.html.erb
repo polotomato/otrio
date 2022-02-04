@@ -1,0 +1,12 @@
+<div class="header mb-1">
+  <%# ロビーならロー専用のタイトルを表示 %>
+  <% if room.nil? %>
+    <div>まだチャット機能しかないよ</div>
+  <% else %>
+    <%# ルーム内なら部屋番号を表示 %>
+    <div><%= "Here is Room #{room.id}" %></div>
+  <% end %>
+  <div class="col-md-3 text-end">
+    <%= button_to 'Logout', destroy_user_session_path, method: :delete, class: "btn btn-outline-danger me-2" %>
+  </div>
+</div>

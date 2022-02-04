@@ -1,13 +1,6 @@
 <section class="vh-100" style="background-color: #eee;">
   <div id="in_lobby">
-    <div class="header">
-      <div>
-        まだチャット機能しかないよ
-      </div>
-      <div class="col-md-3 text-end">
-        <%= button_to 'Logout', destroy_user_session_path, method: :delete, class: "btn btn-outline-danger me-2" %>
-      </div>
-    </div>
+    <%= render partial: 'rooms/header', locals: { room: nil } %>
   </div>
     <div class="main-container">
       <%= render partial: 'rooms/nine_rooms', locals: { rooms: @rooms } %>

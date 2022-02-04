@@ -1,7 +1,7 @@
 <div class="container-fluid	board">
   <% rooms.each do |room| %>
-    <div>
-      <%#= link_to "Room #{room.id}", room_path(room.id) %>
+    <div class="mb-4">
+      <%= link_to "Room #{room.id}", room_path(room.id) %>
     </div>
   <% end %>
 </div>
