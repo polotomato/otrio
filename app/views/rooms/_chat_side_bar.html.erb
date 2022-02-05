@@ -1,7 +1,7 @@
 <div class="chat-container">
   <div class="chat-lists" id="chat-lists">
-    <% unless messages.nil? %>
-      <% messages.each do |message| %>
+    <% unless @messages.nil? %>
+      <% @messages.each do |message| %>
         <%= render partial: 'messages/message', locals: { message: message.content, user_nickname: message.user.nickname } %>
       <% end %>
     <% end %>

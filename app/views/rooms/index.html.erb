@@ -1,10 +1,10 @@
 <section class="vh-100" style="background-color: #eee;">
   <div id="in_lobby">
-    <%= render partial: 'rooms/header', locals: { room: nil } %>
+    <%= render "header" %>
   </div>
     <div class="main-container">
-      <%= render partial: 'rooms/nine_rooms', locals: { rooms: @rooms } %>
-      <%= render partial: "rooms/chat_side_bar", locals: { messages: @messages }  %>
+      <%= render "nine_rooms" %>
+      <%= render "chat_side_bar" %>
     </div>
   </div>
 </section>
