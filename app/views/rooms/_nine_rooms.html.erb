@@ -1,8 +1,23 @@
-<div class="container-fluid	board">
-  <% @rooms.each do |room| %>
-    <div class="mb-4 bg-light w-25">
-      <p><%= link_to "Room #{room.id}", room_path(room.id) %></p>
-      <p><%= "X of #{room.users.size} players are in the game" %></p>
-    </div>
+<div class="board container-fluid d-flex flex-column align-items-center pt-2">
+  <% colors = ["#FF2A2A", "#00D400", "#660080", "#00AAD4"] %>
+  <% @rooms.each_with_index do |room, i| %>
+    <% if i.modulo(3) == 0 %>
+      <div class="room-row d-flex justify-content-between mb-2">
+    <% end %>
+
+        <div class="room-container">
+          <div class="room-detail d-flex flex-column justify-content-center align-items-center">
+              <p><%= "X of #{room.users.size} players" %></p>
+              <p><%= "are in the game" %></p>
+            <div class="room-ring">
+              <%= render "ring", { room: room, color: colors[i.modulo(4)] } %>
+            </div>
+          </div>
+        </div>
+
+    <% if i.modulo(3) == 2 %>
+      </div>
+    <% end %>
+
   <% end %>
 </div>

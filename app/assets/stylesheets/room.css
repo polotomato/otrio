@@ -7,7 +7,36 @@
 
 .board, .lobby {
   height: 100%;
-  background-color: lightgoldenrodyellow
+  background-color: white;
+  overflow: scroll;
+}
+
+.room-row {
+  height: 100vmin;
+  width: 100vmin;
+}
+
+.room-container {
+  width: 30vmin;
+  height: 30vmin;
+  position: relative;
+}
+
+.room-detail {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-size: 3vmin;
+}
+
+.room-ring {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
 .chat-container {
