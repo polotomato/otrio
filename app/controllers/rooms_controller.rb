@@ -22,5 +22,7 @@ class RoomsController < ApplicationController
     end
 
     RoomUser.create(room_id: params[:id], user_id: current_user.id)
+    @room = Room.includes(:users).find(params[:id])
+    @messages = []
   end
 end

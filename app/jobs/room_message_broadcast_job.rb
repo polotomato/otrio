@@ -8,7 +8,7 @@ class RoomMessageBroadcastJob < ApplicationJob
   private
 
   def render_message(data)
-    ApplicationController.renderer.render(partial: 'messages/message',
+    ApplicationController.renderer.render(partial: 'rooms/message',
                                           locals: { message: data[:msg],
                                                     user_nickname: data[:user_nickname]
                                           })

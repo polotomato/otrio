@@ -22,13 +22,22 @@
   position: relative;
 }
 
+.game-players-container, .audience-container{
+  height: 25%;
+  width: 100%;
+}
+
+p.p-game-players, p.p-audience {
+  margin-bottom: 0;
+}
+
 .room-detail {
   height: 100%;
   width: 100%;
   position: absolute;
   top: 0;
   left: 0;
-  font-size: 3vmin;
+  font-size: 5vmin;
 }
 
 .room-ring {
@@ -39,10 +48,19 @@
   left: 0;
 }
 
+.user-list {
+  height: 50%;
+  margin-left: 5px;
+  margin-bottom: 5px;
+  background-color: honeydew;
+  display: flex;
+  flex-direction: column;
+  overflow-y: scroll;
+}
+
 .chat-container {
   height: 100%;
   width: 400px;
-  /* background-color: darksalmon; */
   display: flex;
   flex-direction: column;
 }
@@ -51,7 +69,7 @@
   height: 100%;
   margin-left: 5px;
   margin-bottom: 5px;
-  background-color:skyblue;
+  background-color:aliceblue;
   display: flex;
   flex-direction: column;
   overflow-y: scroll;
@@ -61,5 +79,5 @@
 .chat-input-container {
   height: auto;
   margin-left: 5px;
-  background-color: royalblue;
+  background-color: lightblue;
 }
