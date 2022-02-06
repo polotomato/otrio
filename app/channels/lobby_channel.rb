@@ -1,5 +1,6 @@
 class LobbyChannel < ApplicationCable::Channel
   def subscribed
+    stop_all_streams
     stream_from "lobby_channel"
   end
 
