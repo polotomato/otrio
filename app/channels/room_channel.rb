@@ -6,6 +6,8 @@ class RoomChannel < ApplicationCable::Channel
 
   def unsubscribed
     # Any cleanup needed when channel is unsubscribed
+    records = RoomUser.where("room_id = ? AND user_id = ?", params['room'], current_user.id)
+    records.destroy_all
     RoomMessageBroadcastJob.perform_later({ room_id: params['room'], msg: "#{current_user.nickname}さんが退室しました" })
   end
 
