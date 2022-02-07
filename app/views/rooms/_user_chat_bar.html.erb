@@ -1,5 +1,5 @@
 <div class="chat-container">
-  <div class="user-list">
+  <div class="user-list" id="user-list">
     <% @room.users.each do |user| %>
       <%= render "user", user: user %>
     <% end %>
