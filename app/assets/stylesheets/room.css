@@ -81,3 +81,24 @@ p.p-game-players, p.p-audience {
   margin-left: 5px;
   background-color: lightblue;
 }
+
+.seat {
+  height: 100px;
+  width: 200px;
+}
+
+#seat-1 {
+  background-color: lightskyblue;
+}
+
+#seat-2 {
+  background-color: lightsalmon;
+}
+
+#seat-3 {
+  background-color: violet;
+}
+
+#seat-4 {
+  background-color: wheat;
+}

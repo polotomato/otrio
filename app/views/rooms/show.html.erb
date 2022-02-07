@@ -2,7 +2,12 @@
   <div id="in_room" data-room_id="<%= @room.id %>">
     <%= render "header" %>
     <div class="main-container">
-      <div class="container-fluid	board"></div>
+      <div class="container-fluid	board">
+        <div class="seats" id="seat-1">対戦席 1</div>
+        <div class="seats" id="seat-2">対戦席 2</div>
+        <div class="seats" id="seat-3">対戦席 3</div>
+        <div class="seats" id="seat-4">対戦席 4</div>
+      </div>
       <%= render "user_chat_bar" %>
     </div>
   </div>
