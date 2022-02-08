@@ -34,6 +34,16 @@ class RoomChannel < ApplicationCable::Channel
     })
   end
 
+  def getToSeat(data)
+    room_id = params['room']
+    seat_number = data['seat_number']
+    if RoomUser.where("room_id = ? AND user_id = ?", room_id, current_user.id).exists?
+       unless GamePlayer.where("room_id = ? AND seat = ?", room_id, seat_number).exists?
+        GamePlayer.create(room_id: room_id, user_id: current_user.id, seat: seat_number)
+       end
+    end
+  end
+
   private
 
   def render_message(message)

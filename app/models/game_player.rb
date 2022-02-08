@@ -7,4 +7,6 @@ class GamePlayer < ApplicationRecord
     greater_than_or_equal_to: 1,
     less_than_or_equal_to: 4
   }
+
+  after_create_commit { SeatStatusBroadcastJob.perform_later self }
 end
