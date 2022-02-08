@@ -14,19 +14,18 @@ $(function() {
     },
 
     received: function(data) {
-      const objChat = $('#chat-lists');
       const objUserList = $('#user-list');
+      const objChat = $('#chat-lists');
+
+      // メッセージを表示
+      objChat.append(data['message']);
+      objChat.scrollTop(objChat[0].scrollHeight);
+
       switch (data['status']){
         case 'user-chat':
-          objChat.append(data['message']);
-          objChat.scrollTop(objChat[0].scrollHeight);
           break;
 
         case 'user-in':
-          // 入室のアナウンス
-          objChat.append(data['message']);
-          objChat.scrollTop(objChat[0].scrollHeight);
-
           // 入室者一覧に追加
           if ($(`#user-id-${data['user_id']}`).length === 0){
             objUserList.append(`<div class="user-name" id="user-id-${data['user_id']}"><p>${data['nickname']}</p></div>`);
@@ -34,10 +33,6 @@ $(function() {
           break;
 
         case 'user-out':
-          // 退室のアナウンス
-          objChat.append(data['message']);
-          objChat.scrollTop(objChat[0].scrollHeight);
-
           // 入室者一覧から削除
           $(`#user-id-${data['user_id']}`).remove();
           break;

@@ -12,7 +12,7 @@ class RoomMessageBroadcastJob < ApplicationJob
           })}
     when 'user-in'
       ActionCable.server.broadcast "room_channel_#{data[:room_id]}", { 
-        tatus: 'user-in',
+        status: 'user-in',
         message: render_message({
           msg: data[:msg],
           user_nickname: data[:user_nickname]
