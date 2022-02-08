@@ -102,3 +102,7 @@ p.p-game-players, p.p-audience {
 #seat-4 {
   background-color: wheat;
 }
+
+#spectators {
+  background-color: aquamarine;
+}

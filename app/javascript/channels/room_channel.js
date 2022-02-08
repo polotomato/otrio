@@ -59,5 +59,9 @@ $(function() {
       return e.preventDefault();
     }
   });
-});
 
+  $('.seats').on('click', function(e) {
+    console.log(e.target.innerHTML);
+    console.log(e.target.id);
+  });
+});
