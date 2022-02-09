@@ -6,8 +6,11 @@ class RoomsController < ApplicationController
   
   def index
     @rooms = Room.includes(:users)
+    
     @messages = Message.includes(:user).order("id DESC").limit(20)
     @messages = @messages.sort_by { |v| v.created_at }
+
+    cookies[:user_id] = current_user.id
   end
   
   def show
