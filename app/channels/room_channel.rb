@@ -2,6 +2,7 @@ class RoomChannel < ApplicationCable::Channel
   def subscribed
     stop_all_streams
     stream_from "room_channel_#{params['room']}"
+    stream_from "user_channel_#{current_user.id}"
 
     RoomMessageBroadcastJob.perform_later({
       status: "user-in",
@@ -38,13 +39,42 @@ class RoomChannel < ApplicationCable::Channel
     room_id = params['room']
     seat_number = data['seat_number']
     if RoomUser.where("room_id = ? AND user_id = ?", room_id, current_user.id).exists?
-       unless GamePlayer.where("room_id = ? AND seat = ?", room_id, seat_number).exists?
-        GamePlayer.create(room_id: room_id, user_id: current_user.id, seat: seat_number)
-       end
+      # 観戦席へ移動の場合
+      if seat_number == 0
+        records = GamePlayer.where("user_id = ?", current_user.id)
+        records.destroy_all
+        ActionCable.server.broadcast "room_channel_#{room_id}", {
+          status: 'update-game-players',
+          body: getGamePlayers()
+        }
+      else
+        # 対戦席へ移動する場合
+        unless GamePlayer.where("room_id = ? AND seat = ?", room_id, seat_number).exists?
+          records = GamePlayer.where("user_id = ?", current_user.id)
+          records.destroy_all
+          GamePlayer.create(room_id: room_id, user_id: current_user.id, seat: seat_number)
+        end
+      end
     end
   end
 
+  def getRoomDetail()
+    ActionCable.server.broadcast "user_channel_#{current_user.id}", {
+      status: 'update-game-players',
+      body: getGamePlayers()
+    }
+  end
+
   private
+
+  def getGamePlayers
+    array = {}
+    players = GamePlayer.where("room_id = ?", params['room'])
+    players.each do |player|
+      array[player.seat] = [player.user_id, User.find(player.user_id).nickname] 
+    end
+    return array
+  end
 
   def render_message(message)
     ApplicationController.renderer.render partial: 'rooms/message', locals: { message: message, user_nickname: nil }
