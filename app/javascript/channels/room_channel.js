@@ -4,6 +4,8 @@ import consumer from "./consumer"
 $(function() {
   if ($('#in_room').length === 0) return;
 
+  const user_id = getUserID();
+
   const objUserList = $('#user-list');
   const objChat = $('#chat-lists');
 
@@ -89,3 +91,15 @@ $(function() {
     chatChannel.getToSeat($(this).data('seat'))
   });
 });
+
+function getUserID() {
+  const cookies = document.cookie;
+  const cookiesArray = cookies.split(';');
+
+  for(let c of cookiesArray){
+    const cArray = c.split('=');
+    if( cArray[0].trim() == 'user_id'){
+      return cArray[1].trim();
+    }
+  }
+}
