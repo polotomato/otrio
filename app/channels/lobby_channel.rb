@@ -7,6 +7,7 @@ class LobbyChannel < ApplicationCable::Channel
 
   def unsubscribed
     # Any cleanup needed when channel is unsubscribed
+    LobbyDetailBroadcastJob.perform_later("lobby_channel")
   end
 
   def speak(data)

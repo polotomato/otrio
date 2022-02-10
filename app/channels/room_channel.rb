@@ -17,6 +17,8 @@ class RoomChannel < ApplicationCable::Channel
     # Any cleanup needed when channel is unsubscribed
     records = RoomUser.where("user_id = ?", current_user.id)
     records.destroy_all
+    records = GamePlayer.where("user_id = ?", current_user.id)
+    records.destroy_all
     RoomMessageBroadcastJob.perform_later({
       status: "user-out",
       room_id: params['room'],
@@ -24,6 +26,12 @@ class RoomChannel < ApplicationCable::Channel
       nickname: current_user.nickname,
       msg: "#{current_user.nickname}さんが退室しました"
     })
+    
+    # ロビーへアナウンス
+    LobbyDetailBroadcastJob.perform_later("lobby_channel")
+
+    # ルーム内へアナウンス
+    SeatStatusBroadcastJob.perform_later params['room']
   end
 
   def speak(data)

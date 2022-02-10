@@ -1,18 +1,18 @@
 class SeatStatusBroadcastJob < ApplicationJob
   queue_as :default
 
-  def perform(game_player)
-    ActionCable.server.broadcast "room_channel_#{game_player.room_id}", {
+  def perform(room_id)
+    ActionCable.server.broadcast "room_channel_#{room_id}", {
       status: 'update-game-players',
-      body: getGamePlayers(game_player)
+      body: getGamePlayers(room_id)
     }
   end
 
   private
 
-  def getGamePlayers(game_player)
+  def getGamePlayers(room_id)
     array = {}
-    players = GamePlayer.where("room_id = ?", game_player.room_id)
+    players = GamePlayer.where("room_id = ?", room_id)
     players.each do |player|
       array[player.seat] = [player.user_id, User.find(player.user_id).nickname] 
     end

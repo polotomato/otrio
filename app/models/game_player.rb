@@ -8,5 +8,5 @@ class GamePlayer < ApplicationRecord
     less_than_or_equal_to: 4
   }
 
-  after_create_commit  { SeatStatusBroadcastJob.perform_later self }
+  after_create_commit  { SeatStatusBroadcastJob.perform_later self.room_id }
 end
