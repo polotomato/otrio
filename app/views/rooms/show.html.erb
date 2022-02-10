@@ -2,7 +2,16 @@
   <div id="in_room" data-room_id="<%= @room.id %>">
     <%= render "header" %>
     <div class="main-container">
-      <div class="container-fluid	board"></div>
+      <div class="container-fluid	board">
+        <div class="seats d-flex" id="seat-1" data-seat="1">
+          <div class="me-2">対戦席1に移動</div>
+          <div data-user_id=""></div>
+        </div>
+        <div class="seats d-flex" id="seat-2" data-seat="2"><div class="me-2">対戦席2に移動</div><div data-user_id=""></div></div>
+        <div class="seats d-flex" id="seat-3" data-seat="3"><div class="me-2">対戦席3に移動</div><div data-user_id=""></div></div>
+        <div class="seats d-flex" id="seat-4" data-seat="4"><div class="me-2">対戦席4に移動</div><div data-user_id=""></div></div>
+        <div class="seats d-flex" id="spectator" data-seat="0">観戦席に移動</div>
+      </div>
       <%= render "user_chat_bar" %>
     </div>
   </div>

@@ -2,61 +2,116 @@ import consumer from "./consumer"
 
 // $(function() { ... }); で囲むことでレンダリング後に実行される
 $(function() {
-  if ( $('#in_room').length !== 0 ){
-    const chatChannel = consumer.subscriptions.create({ channel: 'RoomChannel', room: $('#in_room').data('room_id') }, {
-      connected() {
-        // Called when the subscription is ready for use on the server
-      },
+  if ($('#in_room').length === 0) return;
 
-      disconnected() {
-        // Called when the subscription has been terminated by the server
-      },
+  const user_id = getUserID();
 
-      received: function(data) {
-        const objChat = $('#chat-lists');
-        const objUserList = $('#user-list');
-        switch (data['status']){
-          case 'user-chat':
-            objChat.append(data['message']);
-            objChat.scrollTop(objChat[0].scrollHeight);
-            break;
+  const objUserList = $('#user-list');
+  const objChat = $('#chat-lists');
 
-          case 'user-in':
-            // 入室のアナウンス
-            objChat.append(data['message']);
-            objChat.scrollTop(objChat[0].scrollHeight);
+  const seatAvailable = [true, true, true, true, true]
 
-            // 入室者一覧に追加
-            if ($(`#user-id-${data['user_id']}`).length === 0){
-              objUserList.append(`<div class="user-name" id="user-id-${data['user_id']}"><p>${data['nickname']}</p></div>`);
+  const chatChannel = consumer.subscriptions.create({ channel: 'RoomChannel', room: $('#in_room').data('room_id') }, {
+    connected() {
+      // Called when the subscription is ready for use on the server
+      this.perform('getRoomDetail');
+    },
+
+    disconnected() {
+      // Called when the subscription has been terminated by the server
+    },
+
+    received: function(data) {
+      switch (data['status']){
+        case 'user-chat':
+          // メッセージを表示
+          objChat.append(data['message']);
+          objChat.scrollTop(objChat[0].scrollHeight);
+          break;
+
+        case 'user-in':
+          // メッセージを表示
+          objChat.append(data['message']);
+          objChat.scrollTop(objChat[0].scrollHeight);
+          // 入室者一覧に追加
+          if ($(`#user-id-${data['user_id']}`).length === 0){
+            objUserList.append(`
+              <div class="user-name" id="user-id-${data['user_id']}">
+                <p>${data['nickname']}</p>
+              </div>
+            `);
+          }
+          break;
+
+        case 'user-out':
+          // メッセージを表示
+          objChat.append(data['message']);
+          objChat.scrollTop(objChat[0].scrollHeight);
+          // 入室者一覧から削除
+          $(`#user-id-${data['user_id']}`).remove();
+          break;
+
+        case 'update-game-players':
+          // 4つの席を全て再表示
+          const body = data['body'];
+          for(let i = 1; i <= 4; i++) {
+            const seat = $(`[data-seat=${i}] > [data-user_id]`);
+            if (body[`${i}`] === undefined) {
+              seat.attr('data-user_id', "");
+              seat[0].textContent = "空席";
+              seatAvailable[i] = true;
+            } else {
+              const user_id  = body[`${i}`][0]
+              const nickname = body[`${i}`][1]
+              seat.attr('data-user_id', `${user_id}`);
+              seat[0].textContent = `${nickname}`;
+              seatAvailable[i] = false;
             }
-            break;
-
-          case 'user-out':
-            // 退室のアナウンス
-            objChat.append(data['message']);
-            objChat.scrollTop(objChat[0].scrollHeight);
-
-            // 入室者一覧から削除
-            $(`#user-id-${data['user_id']}`).remove();
-            break;
-        }
-      },
-
-      speak: function(message) {
-        return this.perform('speak', {
-          status: 'user-chat',
-          message: message
-        });
+          }
+          break;
       }
-    });
+    },
 
-    $(document).on('keypress', '[data-behavior~=room_speaker]', function(e) {
-      if (e.key === 'Enter') {
+    speak: function(message) {
+      return this.perform('speak', {
+        status: 'user-chat',
+        message: message
+      });
+    },
+
+    // 対戦席に着くことを申請する
+    getToSeat: function(seat_number) {
+      return this.perform('getToSeat', {
+        seat_number: seat_number
+      });
+    }
+  });
+
+  $(document).on('keypress', '[data-behavior~=room_speaker]', function(e) {
+    if (e.key === 'Enter') {
+      if (e.target.value.trim() != "")
         chatChannel.speak(e.target.value);
-        e.target.value = '';
-        return e.preventDefault();
-      }
-    });
-  }
+      e.target.value = '';
+      return e.preventDefault();
+    }
+  });
+
+  $('.seats').on('click', function(e) {
+    const i =  $(this).data('seat'); // seat number
+    if (seatAvailable[i])
+      chatChannel.getToSeat($(this).data('seat'));
+  });
 });
+
+// クッキーからユーザーIDを取得
+function getUserID() {
+  const cookies = document.cookie;
+  const cookiesArray = cookies.split(';');
+
+  for (let c of cookiesArray) {
+    const cArray = c.split('=');
+    if (cArray[0].trim() == 'user_id'){
+      return cArray[1].trim();
+    }
+  }
+}
