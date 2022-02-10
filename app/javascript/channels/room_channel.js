@@ -9,6 +9,8 @@ $(function() {
   const objUserList = $('#user-list');
   const objChat = $('#chat-lists');
 
+  const seatAvailable = [true, true, true, true, true]
+
   const chatChannel = consumer.subscriptions.create({ channel: 'RoomChannel', room: $('#in_room').data('room_id') }, {
     connected() {
       // Called when the subscription is ready for use on the server
@@ -57,11 +59,13 @@ $(function() {
             if (body[`${i}`] === undefined) {
               seat.attr('data-user_id', "");
               seat[0].textContent = "空席";
+              seatAvailable[i] = true;
             } else {
               const user_id  = body[`${i}`][0]
               const nickname = body[`${i}`][1]
               seat.attr('data-user_id', `${user_id}`);
               seat[0].textContent = `${nickname}`;
+              seatAvailable[i] = false;
             }
           }
           break;
@@ -93,7 +97,9 @@ $(function() {
   });
 
   $('.seats').on('click', function(e) {
-    chatChannel.getToSeat($(this).data('seat'))
+    const i =  $(this).data('seat'); // seat number
+    if (seatAvailable[i])
+      chatChannel.getToSeat($(this).data('seat'));
   });
 });
 
@@ -102,9 +108,9 @@ function getUserID() {
   const cookies = document.cookie;
   const cookiesArray = cookies.split(';');
 
-  for(let c of cookiesArray){
+  for (let c of cookiesArray) {
     const cArray = c.split('=');
-    if( cArray[0].trim() == 'user_id'){
+    if (cArray[0].trim() == 'user_id'){
       return cArray[1].trim();
     }
   }
