@@ -43,7 +43,8 @@ $(function() {
 
     $(document).on('keypress', '[data-behavior~=room_speaker]', function(e) {
       if (e.key === 'Enter') {
-        chatChannel.speak(e.target.value);
+        if (e.target.value.trim() != "")
+          chatChannel.speak(e.target.value);
         e.target.value = '';
         return e.preventDefault();
       }
