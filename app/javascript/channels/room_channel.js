@@ -4,12 +4,12 @@ import consumer from "./consumer"
 $(function() {
   if ($('#in_room').length === 0) return;
 
-  const user_id = getUserID();
+  const current_user_id = getUserID();
 
   const objUserList = $('#user-list');
   const objChat = $('#chat-lists');
 
-  const seatAvailable = [true, true, true, true, true]
+  const seatAvailable = [false, false, false, false, false]
 
   const chatChannel = consumer.subscriptions.create({ channel: 'RoomChannel', room: $('#in_room').data('room_id') }, {
     connected() {
@@ -30,7 +30,7 @@ $(function() {
           break;
 
         case 'user-in':
-          // メッセージを表示
+          // 入室者をアナウンス
           objChat.append(data['message']);
           objChat.scrollTop(objChat[0].scrollHeight);
           // 入室者一覧に追加
@@ -44,7 +44,7 @@ $(function() {
           break;
 
         case 'user-out':
-          // メッセージを表示
+          // 退室者をアナウンス
           objChat.append(data['message']);
           objChat.scrollTop(objChat[0].scrollHeight);
           // 入室者一覧から削除
@@ -54,24 +54,42 @@ $(function() {
         case 'update-game-players':
           // 4つの席を全て再表示
           const body = data['body'];
+          const gamePlayerIDs = [];
           for(let i = 1; i <= 4; i++) {
-            const seat = $(`[data-seat=${i}] > [data-user_id]`);
+            const seat = $(`[data-seat=${i}]`);
+            const p = $(`[data-seat=${i}] > p`)
             if (body[`${i}`] === undefined) {
               seat.attr('data-user_id', "");
-              seat[0].textContent = "空席";
+              p.text("参加");
               seatAvailable[i] = true;
             } else {
               const user_id  = body[`${i}`][0]
               const nickname = body[`${i}`][1]
               seat.attr('data-user_id', `${user_id}`);
-              seat[0].textContent = `${nickname}`;
+              p.text(`${nickname}`);
               seatAvailable[i] = false;
+              gamePlayerIDs.push(user_id.toString());
             }
+          }
+          // 自分がプレイヤーなら、観戦ボタンを表示
+          if (gamePlayerIDs.includes(current_user_id)) {
+            $('#btn-decline').css('display', '');
+          } else {
+            $('#btn-decline').css('display', 'none');
+          }
+
+          // プレイヤー4人着席で、seat-1のプレイヤーに開始ボタンを表示
+          const owner_id = $('#owner-seat').attr('data-user_id');
+          if (owner_id === current_user_id && seatAvailable.every(v => v === false)) {
+            $('#btn-start-game').css('display', '');
+          } else {
+            $('#btn-start-game').css('display', 'none');
           }
           break;
       }
     },
 
+    // サーバーへチャット内容を送信
     speak: function(message) {
       return this.perform('speak', {
         status: 'user-chat',
@@ -87,6 +105,7 @@ $(function() {
     }
   });
 
+  // Enterでサーバーへチャットを送信
   $(document).on('keypress', '[data-behavior~=room_speaker]', function(e) {
     if (e.key === 'Enter') {
       if (e.target.value.trim() != "")
@@ -96,10 +115,19 @@ $(function() {
     }
   });
 
-  $('.seats').on('click', function(e) {
-    const i =  $(this).data('seat'); // seat number
-    if (seatAvailable[i])
-      chatChannel.getToSeat($(this).data('seat'));
+  // 参加ボタン押下
+  $('.seat-rings').on('click', function(e) {
+    const i =  $(this).parent().data('seat'); // seat number
+    if (seatAvailable[i]) {
+      seatAvailable[i] = false; // 連打防止
+      chatChannel.perform('getToSeat', { seat_number: i });
+    }
+  });
+
+  // 観戦するボタン押下
+  $('#btn-decline').on('click', function(e) {
+      $(this).css('display', 'none'); // 連打防止
+      chatChannel.perform('decline');
   });
 });
 

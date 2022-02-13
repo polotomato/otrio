@@ -43,26 +43,29 @@ class RoomChannel < ApplicationCable::Channel
     })
   end
 
+  # 対戦席へ移動する場合
   def getToSeat(data)
     room_id = params['room']
     seat_number = data['seat_number']
     if RoomUser.where("room_id = ? AND user_id = ?", room_id, current_user.id).exists?
-      # 観戦席へ移動の場合
-      if seat_number == 0
+      unless GamePlayer.where("room_id = ? AND seat = ?", room_id, seat_number).exists?
         records = GamePlayer.where("user_id = ?", current_user.id)
         records.destroy_all
-        ActionCable.server.broadcast "room_channel_#{room_id}", {
-          status: 'update-game-players',
-          body: getGamePlayers()
-        }
-      else
-        # 対戦席へ移動する場合
-        unless GamePlayer.where("room_id = ? AND seat = ?", room_id, seat_number).exists?
-          records = GamePlayer.where("user_id = ?", current_user.id)
-          records.destroy_all
-          GamePlayer.create(room_id: room_id, user_id: current_user.id, seat: seat_number)
-        end
+        GamePlayer.create(room_id: room_id, user_id: current_user.id, seat: seat_number)
       end
+    end
+  end
+
+  # 観戦席へ移動の場合
+  def decline
+    room_id = params['room']
+    if RoomUser.where("room_id = ? AND user_id = ?", room_id, current_user.id).exists?
+      records = GamePlayer.where("user_id = ?", current_user.id)
+      records.destroy_all
+      ActionCable.server.broadcast "room_channel_#{room_id}", {
+        status: 'update-game-players',
+        body: getGamePlayers()
+      }
     end
   end
 
