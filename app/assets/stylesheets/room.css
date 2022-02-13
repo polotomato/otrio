@@ -6,6 +6,7 @@
 
 .board, .lobby {
   height: 100%;
+  width: 100%;
   background-color: white;
   overflow: scroll;
 }
@@ -81,27 +82,84 @@ p.p-game-players, p.p-audience {
   background-color: lightblue;
 }
 
-.seat {
-  height: 100px;
-  width: 200px;
+.seat-row {
+  display: flex;
+  justify-content: space-around;
 }
 
-#seat-1 {
-  background-color: lightskyblue;
+.top-row {
+  height: 33%;
 }
 
-#seat-2 {
-  background-color: lightsalmon;
+.mid-row {
+  height: 33%;
 }
 
-#seat-3 {
-  background-color: violet;
+.bot-row {
+  height: 33%;
 }
 
-#seat-4 {
-  background-color: wheat;
+.seat-container {
+  width: 30vmin;
+  height: 30vmin;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
 }
 
-#spectator {
-  background-color: aquamarine;
+.seat-text {
+  font-size: 3vmin;
+}
+
+.seat-rings {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+#middle-circle {
+  cursor: pointer;
+}
+
+.btn.btn-decline {
+  width: 50%;
+  color: #004E64;
+  background-color: #fff;
+  border-color: #004E64;
+  font-weight: bold;
+  letter-spacing: 0.05em;
+  border-radius: 0.3rem;
+  margin-bottom: 5%;
+}
+
+.btn.btn-decline:hover,
+.btn.btn-decline:active,
+.btn.btn-decline:focus,
+.btn.btn-decline.active {
+  /* マウスオーバー時、全体を少し濃く */
+  background: #003D4F;
+  color: #ffffff;
+  border-color: #003D4F;
+}
+
+.btn.btn-start-game {
+  width: 50%;
+  color: #004E64;
+  background-color: #fff;
+  border-color: #004E64;
+  font-weight: bold;
+  letter-spacing: 0.05em;
+  border-radius: 0.3rem;
+}
+
+.btn.btn-start-game:hover,
+.btn.btn-start-game:active,
+.btn.btn-start-game:focus,
+.btn.btn-start-game.active {
+  /* マウスオーバー時、全体を少し濃く */
+  background: #003D4F;
+  color: #ffffff;
+  border-color: #003D4F;
 }
