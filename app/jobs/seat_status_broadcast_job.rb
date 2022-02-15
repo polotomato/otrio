@@ -12,9 +12,9 @@ class SeatStatusBroadcastJob < ApplicationJob
 
   def getGamePlayers(room_id)
     array = {}
-    players = GamePlayer.where("room_id = ?", room_id)
+    players = GamePlayer.includes(:user).where("room_id = ?", room_id)
     players.each do |player|
-      array[player.seat] = [player.user_id, User.find(player.user_id).nickname] 
+      array[player.seat] = [player.user_id, player.user.nickname] 
     end
     return array
   end
