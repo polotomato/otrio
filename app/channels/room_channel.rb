@@ -4,6 +4,7 @@ class RoomChannel < ApplicationCable::Channel
     stream_from "room_channel_#{params['room']}"
     stream_from "user_channel_#{current_user.id}"
 
+    # 部屋内に自分が入室したことをアナウンス
     RoomMessageBroadcastJob.perform_later({
       status: "user-in",
       room_id: params['room'],
@@ -11,14 +12,21 @@ class RoomChannel < ApplicationCable::Channel
       nickname: current_user.nickname,
       msg: "#{current_user.nickname}さんが入室しました"
     })
+
+    # ロビーにもアナウンス
+    LobbyDetailBroadcastJob.perform_later "lobby_channel"
   end
 
   def unsubscribed
-    # Any cleanup needed when channel is unsubscribed
+    # abort the game if curent_user is a game player and room has a kifu
+    #     delete kifu
+    #     broadcast abort and reason to room channel
+
     records = RoomUser.where("user_id = ?", current_user.id)
     records.destroy_all
     records = GamePlayer.where("user_id = ?", current_user.id)
     records.destroy_all
+    # 退室したことを部屋内にアナウンス
     RoomMessageBroadcastJob.perform_later({
       status: "user-out",
       room_id: params['room'],
@@ -28,9 +36,9 @@ class RoomChannel < ApplicationCable::Channel
     })
     
     # ロビーへアナウンス
-    LobbyDetailBroadcastJob.perform_later("lobby_channel")
+    LobbyDetailBroadcastJob.perform_later "lobby_channel"
 
-    # ルーム内へアナウンス
+    # 部屋内へアナウンス
     SeatStatusBroadcastJob.perform_later params['room']
   end
 
@@ -59,8 +67,8 @@ class RoomChannel < ApplicationCable::Channel
   # 観戦席へ移動の場合
   def decline
     room_id = params['room']
-    if RoomUser.where("room_id = ? AND user_id = ?", room_id, current_user.id).exists?
-      records = GamePlayer.where("user_id = ?", current_user.id)
+    records = GamePlayer.where("user_id = ?", current_user.id)
+    unless records.empty?
       records.destroy_all
       ActionCable.server.broadcast "room_channel_#{room_id}", {
         status: 'update-game-players',
@@ -69,11 +77,34 @@ class RoomChannel < ApplicationCable::Channel
     end
   end
 
-  def getRoomDetail()
+  # ゲーム参加者一覧を送信
+  def getRoomDetail
     ActionCable.server.broadcast "user_channel_#{current_user.id}", {
       status: 'update-game-players',
       body: getGamePlayers()
     }
+  end
+
+  # ゲーム開始、初期設定を送信
+  def startGame
+    # check sender is valid.
+    # init setting from GamePlayer
+    # decide next player
+    # BroadCast to room_channel
+    
+    ActionCable.server.broadcast "room_channel_#{room_id}", {
+      status: 'playing',
+      next_player_id: 0
+    }
+  end
+
+  def move(xy)
+    # check sender is valid.
+    # update board in memory
+    # judge
+    # BroadCast next player or draw or end
+    # save battle record if end (winner)
+    # delete kifu if game end or draw
   end
 
   private

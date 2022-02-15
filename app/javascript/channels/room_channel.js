@@ -86,6 +86,31 @@ $(function() {
             $('#btn-start-game').css('display', 'none');
           }
           break;
+
+        case 'playing':
+          // update board
+          // 
+          if (data['next_player_id'] === current_user_id){
+            // allow to move
+            // allow to pass
+          }
+          break;
+
+        case 'draw':
+          // display draw
+          // display OK button to reset board and display seats
+          break;
+
+        case 'abort':
+          // display why abort
+          // display OK button to reset board and display seats
+          break;
+
+        case 'end':
+          // display winner
+          // display how to win
+          // display OK button to reset board and display seats
+          break;
       }
     },
 
@@ -116,7 +141,7 @@ $(function() {
   });
 
   // 参加ボタン押下
-  $('.seat-rings').on('click', function(e) {
+  $('.seat-rings').on('click', function() {
     const i =  $(this).parent().data('seat'); // seat number
     if (seatAvailable[i]) {
       seatAvailable[i] = false; // 連打防止
@@ -125,9 +150,31 @@ $(function() {
   });
 
   // 観戦するボタン押下
-  $('#btn-decline').on('click', function(e) {
+  $('#btn-decline').on('click', function() {
       $(this).css('display', 'none'); // 連打防止
       chatChannel.perform('decline');
+  });
+  
+  // ゲーム開始ボタン押下
+  $('#btn-start-game').on('click', function() {
+      $(this).css('display', 'none'); // 連打防止
+      chatChannel.perform('startGame');
+  });
+
+  // 次の一手を押下
+  $('.xxxx').on('click', function() {
+    if ('cant move') return;
+
+    // 連打防止
+
+    chatChannel.perform('move', 'xy');
+  });
+
+  // パスボタン押下
+  $('#btn-pass').on('click', function() {
+    // 連打防止
+
+    chatChannel.perform('move', '-1');
   });
 });
 
