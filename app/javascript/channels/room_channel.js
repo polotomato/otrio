@@ -23,11 +23,10 @@ $(function() {
   let canMove = false;
 
   // 手持ちのコマ残数
-  const myPieces = [3, 3, 3]
+  const myPieces = [3, 3, 3];
 
   // 現在の盤上の色
-  const board = [];
-  resetBoard(board, colors, myPieces);
+  resetBoard(colors, myPieces);
 
   // ボードとパスボタンを隠す（入室直後）
   $("#otrio-board").css('display', 'none');
@@ -112,7 +111,7 @@ $(function() {
         case 'start':
           console.log("get start");
           // reset board
-          resetBoard(board, colors, myPieces);
+          resetBoard(colors, myPieces);
 
           // display board and hide join buttons
           $("#otrio-board").css('display', '');
@@ -204,25 +203,41 @@ $(function() {
   });
 
   // 次の一手を押下
-  $('.xxxx').on('click', function() {
-    if ('cant move') return;
+  // $('.xxxx').on('click', function() {
+  //   if ('cant move') return;
 
-    // 連打防止
+  //   // 連打防止
 
-    chatChannel.perform('move', 'xy');
-  });
+  //   chatChannel.perform('move', 'xy');
+  // });
 
   // パスボタン押下
-  $('#btn-pass').on('click', function() {
-    // 連打防止
+  // $('#btn-pass').on('click', function() {
+  //   // 連打防止
 
-    chatChannel.perform('move', '-1');
-  });
-
-  //test
-  // $('.gray-rings').on('click', function() {
-  //   $(`#${this.id}`).css('fill-opacity', 1);
+  //   chatChannel.perform('move', '-1');
   // });
+
+  // 灰色のリングを押したとき処理
+  $('.gray-rings').on('click', function() {
+    // 灰色以外は押せない
+    if ($(`#${this.id}`).css('fill') != colors["N"]) return;
+
+    // 手持ちに無かったら押せない
+    const size = this.id[3];
+    if (size === "S" && myPieces[0] === 0) return;
+    if (size === "M" && myPieces[1] === 0) return;
+    if (size === "L" && myPieces[2] === 0) return;
+
+    // 自分の手番以外なら押せない
+    if(canMove === false) return;
+
+    // 連打防止
+    canMove = false; 
+
+    // 押したボタンを送信
+    chatChannel.perform('move', { x: this.id[0], y: this.id[1] });
+  });
 });
 
 // クッキーからユーザーIDを取得
@@ -238,12 +253,9 @@ function getUserID() {
   }
 }
 
-function resetBoard(board, colors, myPieces) {
-  board = [];
+function resetBoard(colors, myPieces) {
   for (let i = 0; i < 3; i++) {
-    board.push([]);
     for (let j = 0; j < 3; j++) {
-      board[i].push(["N", "N", "N"]);
       // 盤上を灰色に戻す
       const grayRing = $(`#${i + 1}${j + 1}N`);
       grayRing.css('fill', colors["N"]);
@@ -252,7 +264,7 @@ function resetBoard(board, colors, myPieces) {
   }
 
   // 手持ちのコマ数を戻す
-  myPieces = [3, 3, 3]
+  myPieces = [3, 3, 3];
 
   // 全てプレイヤーののコマの色を戻す
   for (let i = 1; i <= 4; i++) {
