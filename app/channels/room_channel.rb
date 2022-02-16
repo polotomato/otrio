@@ -87,14 +87,39 @@ class RoomChannel < ApplicationCable::Channel
 
   # ゲーム開始、初期設定を送信
   def startGame
+    room_id = params['room']
     # check sender is valid.
-    # init setting from GamePlayer
-    # decide next player
-    # BroadCast to room_channel
+    owner = GamePlayer.includes(:user).find_by(user_id: current_user.id, room_id: room_id)
+    if owner.present? && owner.seat == 1
+      # 初期設定
+      players =  GamePlayer.includes(:user).order("seat").where("room_id = ?", room_id)
+      setting = {}
+      players.zip("RGPB".split("")) do |player, color|
+        setting[color] = {
+          "user_id" => player.user_id,
+          "nickname" => player.user.nickname,
+          "rings" => [3, 3, 3]
+        }
+      end
+
+      # 先番を決める
+      next_color = "RGPB"[rand(4)]
+      next_player_id = setting[next_color]["user_id"]
+
+      # 棋譜を保存
+      kifu = {
+        "setting" => setting,
+        "next_player_id" => next_player_id,
+        "records" => []
+      }
+      room = Room.find(room_id)
+      room.update(kifu: kifu.to_json)
+    end
     
+    # ゲーム開始をアナウンス
     ActionCable.server.broadcast "room_channel_#{room_id}", {
-      status: 'playing',
-      next_player_id: 0
+      status: 'start',
+      next_player_id: next_player_id,
     }
   end
 

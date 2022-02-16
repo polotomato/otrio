@@ -176,6 +176,11 @@ $(function() {
 
     chatChannel.perform('move', '-1');
   });
+
+  //test
+  // $('.gray-rings').on('click', function() {
+  //   $(`#${this.id}`).css('fill-opacity', 1);
+  // });
 });
 
 // クッキーからユーザーIDを取得

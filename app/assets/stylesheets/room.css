@@ -87,15 +87,7 @@ p.p-game-players, p.p-audience {
   justify-content: space-around;
 }
 
-.top-row {
-  height: 33%;
-}
-
-.mid-row {
-  height: 33%;
-}
-
-.bot-row {
+.top-row, .mid-row, .bot-row {
   height: 33%;
 }
 
@@ -138,10 +130,10 @@ p.p-game-players, p.p-audience {
 .btn.btn-decline:active,
 .btn.btn-decline:focus,
 .btn.btn-decline.active {
-  /* マウスオーバー時、全体を少し濃く */
-  background: #003D4F;
+  /* マウスオーバー時、色反転 */
+  background: #004E64;
   color: #ffffff;
-  border-color: #003D4F;
+  border-color: #004E64;
 }
 
 .btn.btn-start-game {
@@ -158,8 +150,12 @@ p.p-game-players, p.p-audience {
 .btn.btn-start-game:active,
 .btn.btn-start-game:focus,
 .btn.btn-start-game.active {
-  /* マウスオーバー時、全体を少し濃く */
-  background: #003D4F;
+  /* マウスオーバー時、色反転 */
+  background: #004E64;
   color: #ffffff;
-  border-color: #003D4F;
+  border-color: #004E64;
+}
+
+#otrio-board {
+  display: none;
 }
