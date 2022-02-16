@@ -202,21 +202,12 @@ $(function() {
       chatChannel.perform('startGame');
   });
 
-  // 次の一手を押下
-  // $('.xxxx').on('click', function() {
-  //   if ('cant move') return;
-
-  //   // 連打防止
-
-  //   chatChannel.perform('move', 'xy');
-  // });
-
   // パスボタン押下
-  // $('#btn-pass').on('click', function() {
-  //   // 連打防止
-
-  //   chatChannel.perform('move', '-1');
-  // });
+  $('#btn-pass').on('click', function() {
+    // 連打防止
+    $(this).css('visibility', 'hidden');
+    chatChannel.perform('move', { x: "-1", y: "-1" });
+  });
 
   // 灰色のリングを押したとき処理
   $('.gray-rings').on('click', function() {
