@@ -96,7 +96,7 @@ class RoomChannel < ApplicationCable::Channel
       setting = {}
       players.zip("RGPB".split("")) do |player, color|
         setting[color] = {
-          "user_id" => player.user_id,
+          "user_id" => player.user_id.to_s,
           "nickname" => player.user.nickname,
           "rings" => [3, 3, 3]
         }

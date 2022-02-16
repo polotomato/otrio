@@ -11,6 +11,28 @@ $(function() {
 
   const seatAvailable = [false, false, false, false, false]
 
+  const colors = {
+    "R": "#FF2A2A",
+    "G": "#00D400",
+    "P": "#660080",
+    "B": "#00AAD4",
+    "N": "#000000"
+  };
+
+  // 行動可能のフラグ
+  let canMove = false;
+
+  // 手持ちのコマ残数
+  const myPieces = [3, 3, 3]
+
+  // 現在の盤上の色
+  const board = [];
+  resetBoard(board, colors, myPieces);
+
+  // ボードとパスボタンを隠す（入室直後）
+  $("#otrio-board").css('display', 'none');
+  $("#btn-pass").css('visibility', 'hidden');
+
   const chatChannel = consumer.subscriptions.create({ channel: 'RoomChannel', room: $('#in_room').data('room_id') }, {
     connected() {
       // Called when the subscription is ready for use on the server
@@ -84,6 +106,26 @@ $(function() {
             $('#btn-start-game').css('display', '');
           } else {
             $('#btn-start-game').css('display', 'none');
+          }
+          break;
+
+        case 'start':
+          console.log("get start");
+          // reset board
+          resetBoard(board, colors, myPieces);
+
+          // display board and hide join buttons
+          $("#otrio-board").css('display', '');
+          $(".seat-row").css('display', 'none');
+
+          if (data['next_player_id'] === current_user_id){
+            // allow to move
+            canMove = true;
+            // allow to pass
+            $("#btn-pass").css('visibility', 'visible');
+          } else {
+            canMove = false;
+            $("#btn-pass").css('visibility', 'hidden');
           }
           break;
 
@@ -193,5 +235,33 @@ function getUserID() {
     if (cArray[0].trim() == 'user_id'){
       return cArray[1].trim();
     }
+  }
+}
+
+function resetBoard(board, colors, myPieces) {
+  board = [];
+  for (let i = 0; i < 3; i++) {
+    board.push([]);
+    for (let j = 0; j < 3; j++) {
+      board[i].push(["N", "N", "N"]);
+      // 盤上を灰色に戻す
+      const grayRing = $(`#${i + 1}${j + 1}N`);
+      grayRing.css('fill', colors["N"]);
+      grayRing.css('fill-opacity', 0.2);
+    }
+  }
+
+  // 手持ちのコマ数を戻す
+  myPieces = [3, 3, 3]
+
+  // 全てプレイヤーののコマの色を戻す
+  for (let i = 1; i <= 4; i++) {
+    ["R", "G", "P", "G"].forEach(function(color){
+      ["S", "M", "L"].forEach(function(size){
+        const ring = $(`#${color}${size}${i}`);
+        ring.css('fill', colors[color]);
+        ring.css('fill-opacity', 1);
+      });  
+    });
   }
 }

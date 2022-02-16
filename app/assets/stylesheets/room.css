@@ -11,6 +11,10 @@
   overflow: scroll;
 }
 
+.board {
+  position: relative;
+}
+
 .room-row {
   height: 100vmin;
   width: 100vmin;
@@ -156,6 +160,24 @@ p.p-game-players, p.p-audience {
   border-color: #004E64;
 }
 
-#otrio-board {
-  display: none;
+.btn.btn-pass {
+  position: absolute;
+  top: 5%;
+  left: 5%;
+  color: #004E64;
+  background-color: #fff;
+  border-color: #004E64;
+  font-weight: bold;
+  letter-spacing: 0.05em;
+  border-radius: 0.3rem;
+}
+
+.btn.btn-pass:hover,
+.btn.btn-pass:active,
+.btn.btn-pass:focus,
+.btn.btn-pass.active {
+  /* マウスオーバー時、色反転 */
+  background: #004E64;
+  color: #ffffff;
+  border-color: #004E64;
 }
