@@ -94,12 +94,14 @@ class RoomChannel < ApplicationCable::Channel
       # 初期設定
       players =  GamePlayer.includes(:user).order("seat").where("room_id = ?", room_id)
       setting = {}
+      order = []
       players.zip("RGPB".split("")) do |player, color|
         setting[color] = {
           "user_id" => player.user_id.to_s,
           "nickname" => player.user.nickname,
           "rings" => [3, 3, 3]
         }
+        order << player.user_id.to_s
       end
 
       # 先番を決める
@@ -109,7 +111,9 @@ class RoomChannel < ApplicationCable::Channel
       # 棋譜を保存
       kifu = {
         "setting" => setting,
+        "order" => order,
         "next_player_id" => next_player_id,
+        "board" => create_board(),
         "records" => []
       }
       room = Room.find(room_id)
@@ -119,17 +123,110 @@ class RoomChannel < ApplicationCable::Channel
     # ゲーム開始をアナウンス
     ActionCable.server.broadcast "room_channel_#{room_id}", {
       status: 'start',
-      next_player_id: next_player_id,
+      next_player_id: next_player_id
     }
   end
 
-  def move(xy)
+  def move(data)
     # check sender is valid.
-    # update board in memory
-    # judge
-    # BroadCast next player or draw or end
-    # save battle record if end (winner)
-    # delete kifu if game end or draw
+    player = GamePlayer.includes(:room).find_by(room_id: params['room'], user_id: current_user.id)
+    if player.present?
+      kifu = JSON.parse(player.room.kifu)
+
+      if kifu["next_player_id"] != current_user.id.to_s
+        return
+      end
+
+      x = data['x'].to_i
+      y = data['y'].to_i
+      s = data['size']
+      user_color = "RGPB"[player.seat - 1]
+      size = { "S" => 0, "M" => 1, "L" => 2 }
+
+      # cant move if you dont have pieces
+      if kifu["setting"][user_color]["rings"][size[s]] == 0
+        return
+      else
+        kifu["setting"][user_color]["rings"][size[s]] -= 1
+      end
+
+      # update board with new record
+      kifu["board"][y - 1][x - 1][size[s]] = user_color
+
+      # add new record to kifu
+      new_record = [x, y, s, user_color]
+      kifu["records"] << new_record
+
+      # set next player
+      i = kifu["order"].index(kifu["next_player_id"])
+      i = (i + 1) % 4
+      kifu["next_player_id"] = kifu["order"][i]
+
+      # save kifu
+      room = Room.find(player.room_id)
+      room.update(kifu: kifu.to_json)
+
+      # judge
+      result = judge(kifu["board"], new_record)
+      if result["status"] == "win"
+        #
+        # save battle record if someone won
+        #
+
+        room.update(kifu: nil)
+
+        return ActionCable.server.broadcast "room_channel_#{room.id}", {
+          status: 'win',
+          win_detail: result["win_detail"],
+          winner_nickname: current_user.nickname,
+          new_record: new_record
+        }
+      end
+
+      # check draw
+      if kifu["records"].length == 27
+        room.update(kifu: nil)
+        return ActionCable.server.broadcast "room_channel_#{room.id}", {
+          status: 'draw',
+          new_record: new_record
+        }
+      end
+
+      # broadcast next player for room
+      ActionCable.server.broadcast "room_channel_#{room.id}", {
+        status: 'next',
+        next_player_id: kifu["next_player_id"],
+        new_record: new_record
+      }
+    end
+  end
+
+  def pass
+    # check sender is valid.
+    player = GamePlayer.includes(:room).find_by(room_id: params['room'], user_id: current_user.id)
+    if player.present?
+      kifu = JSON.parse(player.room.kifu)
+
+      if kifu["next_player_id"] != current_user.id.to_s
+        return
+      end
+
+      # set next player
+      i = kifu["order"].index(kifu["next_player_id"])
+      i = (i + 1) % 4
+      kifu["next_player_id"] = kifu["order"][i]
+
+      # save kifu
+      room = Room.find(player.room_id)
+      room.update(kifu: kifu.to_json)
+
+      # broadcast next player for room
+      ActionCable.server.broadcast "room_channel_#{room.id}", {
+        status: 'next',
+        next_player_id: kifu["next_player_id"],
+        new_record: new_record
+      }
+    end
   end
 
   private
@@ -145,5 +242,114 @@ class RoomChannel < ApplicationCable::Channel
 
   def render_message(message)
     ApplicationController.renderer.render partial: 'rooms/message', locals: { message: message, user_nickname: nil }
+  end
+
+  def create_board
+    return [
+      [["N", "N", "N"], ["N", "N", "N"], ["N", "N", "N"]],
+      [["N", "N", "N"], ["N", "N", "N"], ["N", "N", "N"]],
+      [["N", "N", "N"], ["N", "N", "N"], ["N", "N", "N"]]
+    ]
+  end
+
+  def judge(board, record)
+    x = record[0].to_i - 1
+    y = record[1].to_i - 1
+    s = record[2]
+    c = record[3]
+
+    result = { "status" => "next" }
+
+    # 右下がりチェック
+    if y == 0 && x == 0 || y == 1 && x == 1 || y == 2 && x == 2
+      array = [board[0][0], board[1][1], board[2][2]]
+      if check_array(array, s, c, result)
+        if result["status"] == "same_size"
+          result["win_detail"] = ["11N#{s}", "22N#{s}", "33N#{s}"]
+        elsif result["status"] == "DESC"
+          result["win_detail"] = ["11NL", "22NM", "33NS"]
+        elsif result["status"] == "ASC"
+          result["win_detail"] = ["11NS", "22NM", "33NL"]
+        end
+        result["status"] = "win"
+        return result
+      end
+    end
+
+    # 右上がりチェック
+    if y == 2 && x == 0 || y == 1 && x == 1 || y == 0 && x == 2
+      array = [board[2][0], board[1][1], board[0][2]]
+      if check_array(array, s, c, result)
+        if result["status"] == "same_size"
+          result["win_detail"] = ["13N#{s}", "22N#{s}", "31N#{s}"]
+        elsif result["status"] == "DESC"
+          result["win_detail"] = ["13NL", "22NM", "31NS"]
+        elsif result["status"] == "ASC"
+          result["win_detail"] = ["13NS", "22NM", "31NL"]
+        end
+        result["status"] = "win"
+        return result
+      end
+    end
+
+    # 横チェック
+    array = [board[y][0], board[y][1], board[y][2]]
+    if check_array(array, s, c, result)
+      if result["status"] == "same_size"
+        result["win_detail"] = ["1#{y + 1}N#{s}", "2#{y + 1}N#{s}", "3#{y + 1}N#{s}"]
+      elsif result["status"] == "DESC"
+        result["win_detail"] = ["1#{y + 1}NL", "2#{y + 1}NM", "3#{y + 1}NS"]
+      elsif result["status"] == "ASC"
+        result["win_detail"] = ["1#{y + 1}NS", "2#{y + 1}NM", "3#{y + 1}NL"]
+      end
+      result["status"] = "win"
+      return result
+    end
+
+    # 縦チェック
+    array = [board[0][x], board[1][x], board[2][x]]
+    if check_array(array, s, c, result)
+      if result["status"] == "same_size"
+        result["win_detail"] = ["#{x + 1}1N#{s}", "#{x + 1}2N#{s}", "#{x + 1}3N#{s}"]
+      elsif result["status"] == "DESC"
+        result["win_detail"] = ["#{x + 1}1NL", "#{x + 1}2NM", "#{x + 1}3NS"]
+      elsif result["status"] == "ASC"
+        result["win_detail"] = ["#{x + 1}1NS", "#{x + 1}2NM", "#{x + 1}3NL"]
+      end
+      result["status"] = "win"
+      return result
+    end
+
+    # 同じセルをチェック
+    if board[y][x][0] == c && board[y][x][1] == c && board[y][x][2] == c
+      result["win_detail"] = ["#{x + 1}#{y + 1}NS", "#{x + 1}#{y + 1}NM", "#{x + 1}#{y + 1}NL"]
+      result["status"] = "win"
+      return result
+    end
+
+    return result
+  end
+
+  def check_array(array, s, c, result)
+    size = { "S" => 0, "M" => 1, "L" => 2 }
+    i = size[s]
+    # 同じサイズ
+    if array[0][i] == c && array[1][i] == c && array[2][i] == c
+      result["status"] = "same_size"
+      return true
+    end
+    # 大きい順
+    if array[0][2] == c && array[1][1] == c && array[2][0] == c
+      result["status"] = "DESC"
+      return true
+    end
+
+    # 小さい順
+    if array[0][0] == c && array[1][1] == c && array[2][2] == c
+      result["status"] = "ASC"
+      return true
+    end
+
+    return false
   end
 end

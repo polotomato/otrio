@@ -181,3 +181,25 @@ p.p-game-players, p.p-audience {
   color: #ffffff;
   border-color: #004E64;
 }
+
+.btn.btn-reset {
+  position: absolute;
+  top: 5%;
+  left: 5%;
+  color: #004E64;
+  background-color: #fff;
+  border-color: #004E64;
+  font-weight: bold;
+  letter-spacing: 0.05em;
+  border-radius: 0.3rem;
+}
+
+.btn.btn-reset:hover,
+.btn.btn-reset:active,
+.btn.btn-reset:focus,
+.btn.btn-reset.active {
+  /* マウスオーバー時、色反転 */
+  background: #004E64;
+  color: #ffffff;
+  border-color: #004E64;
+}
