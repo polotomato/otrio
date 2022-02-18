@@ -51,7 +51,7 @@ $(function() {
       // アナウンスがあればチャット欄に表示する
       if (data['announce'] != undefined)
         announce(objChat, data['announce']);
-        
+
       switch (data['status']){
         // ユーザーチャットを表示
         case 'user-chat':
@@ -147,10 +147,11 @@ $(function() {
           break;
 
         case 'draw':
-          // TODO: 
           // update board
-          // display draw
+          updateBoard(data['new_record'], colorCode);
+
           // display reset button to reset board and display seats
+          displaySeats();
           break;
 
         case 'abort':
@@ -167,8 +168,7 @@ $(function() {
           winDetail(data['win_detail']);
 
           // display reset button to reset board and display seats
-          $("#btn-pass").css('display', 'none');
-          $("#btn-reset").css('display', '');
+          displaySeats();
           break;
       }
     },
@@ -410,4 +410,9 @@ function rgbToHex(color)
 function announce(objChat, announce) {
   objChat.append(announce);
   objChat.scrollTop(objChat[0].scrollHeight);
+}
+
+function displaySeats() {
+  $("#btn-pass").css('display', 'none');
+  $("#btn-reset").css('display', '');
 }
