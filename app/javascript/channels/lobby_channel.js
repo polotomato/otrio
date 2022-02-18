@@ -3,6 +3,9 @@ import consumer from "./consumer"
 // $(function() { ... }); で囲むことでレンダリング後に実行される
 $(function() {
   if ( $('#in_lobby').length !== 0 ){
+    const objChat = $('#chat-lists');
+    objChat.scrollTop(objChat[0].scrollHeight);
+
     const chatChannel = consumer.subscriptions.create("LobbyChannel", {
       connected() {
         // Called when the subscription is ready for use on the server
@@ -18,7 +21,6 @@ $(function() {
           case 'chat-message':
             // ロビーチャットにメッセージを追加
             $('#chat-lists').append(data['message']);
-            const objChat = $('#chat-lists');
             objChat.scrollTop(objChat[0].scrollHeight);
             break;
         
