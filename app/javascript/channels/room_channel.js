@@ -150,12 +150,14 @@ $(function() {
           break;
 
         case 'draw':
+          // TODO: 
           // update board
           // display draw
           // display reset button to reset board and display seats
           break;
 
         case 'abort':
+          // TODO: 
           // display why abort
           // display reset button to reset board and display seats
           break;
