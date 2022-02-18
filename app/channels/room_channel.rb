@@ -18,6 +18,7 @@ class RoomChannel < ApplicationCable::Channel
   end
 
   def unsubscribed
+    # TODO:
     # abort the game if curent_user is a game player and room has a kifu
     #     delete kifu
     #     broadcast abort and reason to room channel
@@ -124,6 +125,16 @@ class RoomChannel < ApplicationCable::Channel
     ActionCable.server.broadcast "room_channel_#{room_id}", {
       status: 'start',
       next_player_id: next_player_id
+    }
+
+    # 次のプレイヤー名を部屋にアナウンス
+    next_player = User.find(next_player_id.to_i)
+    ActionCable.server.broadcast "room_channel_#{room_id}", {
+      status: 'announce',
+      announce: ApplicationController.renderer.render(
+        partial: 'rooms/announce',
+        locals: { announce: "【#{next_player.nickname}さんの手番です】" }
+      )
     }
   end
 

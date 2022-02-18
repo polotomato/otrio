@@ -177,6 +177,12 @@ $(function() {
           $("#btn-pass").css('display', 'none');
           $("#btn-reset").css('display', '');
           break;
+
+        case 'announce':
+          // アナウンスを表示
+          objChat.append(data['announce']);
+          objChat.scrollTop(objChat[0].scrollHeight);
+          break;
       }
     },
 
