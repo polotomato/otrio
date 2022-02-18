@@ -151,13 +151,12 @@ $(function() {
           updateBoard(data['new_record'], colorCode);
 
           // display reset button to reset board and display seats
-          displaySeats();
+          displayResetButton();
           break;
 
         case 'abort':
-          // TODO: 
-          // display why abort
           // display reset button to reset board and display seats
+          displayResetButton();
           break;
 
         case 'win':
@@ -168,7 +167,7 @@ $(function() {
           winDetail(data['win_detail']);
 
           // display reset button to reset board and display seats
-          displaySeats();
+          displayResetButton();
           break;
       }
     },
@@ -412,7 +411,7 @@ function announce(objChat, announce) {
   objChat.scrollTop(objChat[0].scrollHeight);
 }
 
-function displaySeats() {
+function displayResetButton() {
   $("#btn-pass").css('display', 'none');
   $("#btn-reset").css('display', '');
 }
