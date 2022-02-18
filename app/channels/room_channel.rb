@@ -9,8 +9,7 @@ class RoomChannel < ApplicationCable::Channel
       status: "user-in",
       room_id: params['room'],
       user_id: current_user.id,
-      nickname: current_user.nickname,
-      msg: "#{current_user.nickname}さんが入室しました"
+      nickname: current_user.nickname
     })
 
     # ロビーにもアナウンス
@@ -18,21 +17,32 @@ class RoomChannel < ApplicationCable::Channel
   end
 
   def unsubscribed
-    # abort the game if curent_user is a game player and room has a kifu
-    #     delete kifu
-    #     broadcast abort and reason to room channel
+    # ゲーム進行中なら中断理由をアナウンス
+    player = GamePlayer.includes(:room).includes(:user).find_by("user_id = ?", current_user.id)
+    if player.present?
+      if player.room.kifu.present?
+        player.room.update(kifu: nil)
+        ActionCable.server.broadcast "room_channel_#{player.room_id}", {
+          status: 'abort',
+          announce: ApplicationController.renderer.render(
+            partial: 'rooms/announce',
+            locals: { announce: "【ゲーム終了。#{player.user.nickname}さんとの接続が切れました】" }
+          )
+        }
+      end
+      player.destroy
+    end
+
 
     records = RoomUser.where("user_id = ?", current_user.id)
     records.destroy_all
-    records = GamePlayer.where("user_id = ?", current_user.id)
-    records.destroy_all
+
     # 退室したことを部屋内にアナウンス
     RoomMessageBroadcastJob.perform_later({
       status: "user-out",
       room_id: params['room'],
       user_id: current_user.id,
-      nickname: current_user.nickname,
-      msg: "#{current_user.nickname}さんが退室しました"
+      nickname: current_user.nickname
     })
     
     # ロビーへアナウンス
@@ -45,9 +55,9 @@ class RoomChannel < ApplicationCable::Channel
   def speak(data)
     RoomMessageBroadcastJob.perform_later({
       status: "user-chat",
-      msg: data['message'],
+      message: data['message'],
       room_id: params['room'],
-      user_nickname: current_user.nickname
+      nickname: current_user.nickname
     })
   end
 
@@ -107,6 +117,7 @@ class RoomChannel < ApplicationCable::Channel
       # 先番を決める
       next_color = "RGPB"[rand(4)]
       next_player_id = setting[next_color]["user_id"]
+      next_player_nickname = setting[next_color]["nickname"]
 
       # 棋譜を保存
       kifu = {
@@ -124,6 +135,15 @@ class RoomChannel < ApplicationCable::Channel
     ActionCable.server.broadcast "room_channel_#{room_id}", {
       status: 'start',
       next_player_id: next_player_id
+    }
+
+    # 次のプレイヤー名を部屋にアナウンス
+    ActionCable.server.broadcast "room_channel_#{room_id}", {
+      status: 'announce',
+      announce: ApplicationController.renderer.render(
+        partial: 'rooms/announce',
+        locals: { announce: "【#{next_player_nickname}さんの手番です】" }
+      )
     }
   end
 
@@ -162,41 +182,62 @@ class RoomChannel < ApplicationCable::Channel
       i = (i + 1) % 4
       kifu["next_player_id"] = kifu["order"][i]
 
-      # save kifu
+      next_player_nickname = ""
+      "RGPB".split("").each do |color|
+        if kifu["setting"][color]["user_id"] == kifu["next_player_id"]
+          next_player_nickname = kifu["setting"][color]["nickname"]
+        end
+      end
+
+      # 棋譜の保存
       room = Room.find(player.room_id)
       room.update(kifu: kifu.to_json)
 
-      # judge
+      # 勝利判定
       result = judge(kifu["board"], new_record)
       if result["status"] == "win"
-        #
+        # TODO:
         # save battle record if someone won
         #
 
+        # 棋譜の削除
         room.update(kifu: nil)
 
-        return ActionCable.server.broadcast "room_channel_#{room.id}", {
+        ActionCable.server.broadcast "room_channel_#{room.id}", {
           status: 'win',
           win_detail: result["win_detail"],
-          winner_nickname: current_user.nickname,
-          new_record: new_record
+          new_record: new_record,
+          announce: ApplicationController.renderer.render(
+            partial: 'rooms/announce',
+            locals: { announce: "【#{current_user.nickname}さんの勝ちです】" }
+          )
         }
+        return
       end
 
-      # check draw
+      # 引き分け判定
       if kifu["records"].length == 27
         room.update(kifu: nil)
-        return ActionCable.server.broadcast "room_channel_#{room.id}", {
+        ActionCable.server.broadcast "room_channel_#{room.id}", {
           status: 'draw',
-          new_record: new_record
+          new_record: new_record,
+          announce: ApplicationController.renderer.render(
+            partial: 'rooms/announce',
+            locals: { announce: "【引き分けです】" }
+          )
         }
+        return
       end
 
       # broadcast next player for room
       ActionCable.server.broadcast "room_channel_#{room.id}", {
         status: 'next',
         next_player_id: kifu["next_player_id"],
-        new_record: new_record
+        new_record: new_record,
+        announce: ApplicationController.renderer.render(
+          partial: 'rooms/announce',
+          locals: { announce: "【#{next_player_nickname}さんの手番です】" }
+        )
       }
     end
   end
@@ -224,7 +265,11 @@ class RoomChannel < ApplicationCable::Channel
       ActionCable.server.broadcast "room_channel_#{room.id}", {
         status: 'next',
         next_player_id: kifu["next_player_id"],
-        new_record: new_record
+        new_record: new_record,
+        announce: ApplicationController.renderer.render(
+          partial: 'rooms/announce',
+          locals: { announce: "【#{next_player.nickname}さんの手番です】" }
+        )
       }
     end
   end

@@ -48,17 +48,17 @@ $(function() {
     },
 
     received: function(data) {
+      // アナウンスがあればチャット欄に表示する
+      if (data['announce'] != undefined)
+        announce(objChat, data['announce']);
+
       switch (data['status']){
+        // ユーザーチャットを表示
         case 'user-chat':
-          // メッセージを表示
-          objChat.append(data['message']);
-          objChat.scrollTop(objChat[0].scrollHeight);
+          announce(objChat, data['message']);
           break;
 
         case 'user-in':
-          // 入室者をアナウンス
-          objChat.append(data['message']);
-          objChat.scrollTop(objChat[0].scrollHeight);
           // 入室者一覧に追加
           if ($(`#user-id-${data['user_id']}`).length === 0){
             objUserList.append(`
@@ -70,9 +70,6 @@ $(function() {
           break;
 
         case 'user-out':
-          // 退室者をアナウンス
-          objChat.append(data['message']);
-          objChat.scrollTop(objChat[0].scrollHeight);
           // 入室者一覧から削除
           $(`#user-id-${data['user_id']}`).remove();
           break;
@@ -151,39 +148,33 @@ $(function() {
 
         case 'draw':
           // update board
-          // display draw
+          updateBoard(data['new_record'], colorCode);
+
           // display reset button to reset board and display seats
+          displayResetButton();
           break;
 
         case 'abort':
-          // display why abort
           // display reset button to reset board and display seats
+          displayResetButton();
           break;
 
         case 'win':
           // update board
           updateBoard(data['new_record'], colorCode);
 
-          // display winner
-          objChat.append(addMessage(`【${data['winner_nickname']}さんが勝ちました】`));
-          objChat.scrollTop(objChat[0].scrollHeight);
-
           // display why to win
           winDetail(data['win_detail']);
 
           // display reset button to reset board and display seats
-          $("#btn-pass").css('display', 'none');
-          $("#btn-reset").css('display', '');
+          displayResetButton();
           break;
       }
     },
 
     // サーバーへチャット内容を送信
     speak: function(message) {
-      return this.perform('speak', {
-        status: 'user-chat',
-        message: message
-      });
+      return this.perform('speak', { message: message });
     },
 
     // 対戦席に着くことを申請する
@@ -415,10 +406,12 @@ function rgbToHex(color)
   console.error('第1引数はRGB形式で入力');
 }
 
-function addMessage(str) {
-  return `
-    <div class='message'>
-      <p>${str}</p>
-    </div>
-  `;
+function announce(objChat, announce) {
+  objChat.append(announce);
+  objChat.scrollTop(objChat[0].scrollHeight);
+}
+
+function displayResetButton() {
+  $("#btn-pass").css('display', 'none');
+  $("#btn-reset").css('display', '');
 }
