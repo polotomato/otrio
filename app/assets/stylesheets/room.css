@@ -170,6 +170,7 @@ p.p-game-players, p.p-audience {
   font-weight: bold;
   letter-spacing: 0.05em;
   border-radius: 0.3rem;
+  visibility: hidden;
 }
 
 .btn.btn-pass:hover,
@@ -192,6 +193,7 @@ p.p-game-players, p.p-audience {
   font-weight: bold;
   letter-spacing: 0.05em;
   border-radius: 0.3rem;
+  visibility: hidden;
 }
 
 .btn.btn-reset:hover,

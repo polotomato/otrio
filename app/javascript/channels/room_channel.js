@@ -33,9 +33,8 @@ $(function() {
 
   // ボードとパスボタンを隠す（入室直後）
   $("#otrio-board").css('display', 'none');
-  // $("#btn-pass").css('visibility', 'hidden');
-  $("#btn-pass").css('display', 'none');
-  $("#btn-reset").css('display', 'none');
+  $("#btn-pass").css('visibility', 'hidden');
+  $("#btn-reset").css('visibility', 'hidden');
 
   const chatChannel = consumer.subscriptions.create({ channel: 'RoomChannel', room: $('#in_room').data('room_id') }, {
     connected() {
@@ -117,17 +116,17 @@ $(function() {
           // display board and hide buttons
           $("#otrio-board").css('display', '');
           $(".seat-row").css('display', 'none');
-          $("#btn-reset").css('display', 'none');
-          $("#btn-pass").css('display', 'none');
+          $("#btn-pass").css('visibility', 'hidden');
+          $("#btn-reset").css('visibility', 'hidden');
 
           if (data['next_player_id'] === current_user_id){
             // allow to move
             canMove = true;
             // allow to pass
-            $("#btn-pass").css('display', '');
+            $("#btn-pass").css('visibility', 'visible');
           } else {
             canMove = false;
-            $("#btn-pass").css('display', 'none');
+            $("#btn-pass").css('visibility', 'hidden');
           }
           break;
 
@@ -139,10 +138,10 @@ $(function() {
             // allow to move
             canMove = true;
             // allow to pass
-            $("#btn-pass").css('display', '');
+            $("#btn-pass").css('visibility', 'visible');
           } else {
             canMove = false;
-            $("#btn-pass").css('display', 'none');
+            $("#btn-pass").css('visibility', 'hidden');
           }
           break;
 
@@ -221,13 +220,13 @@ $(function() {
 
   // パスボタン押下
   $('#btn-pass').on('click', function() {
-    $(this).css('display', 'none'); // 連打防止
+    $(this).css('visibility', 'hidden'); // 連打防止
     chatChannel.perform('pass');
   });
 
   // リセットボタン押下
   $('#btn-reset').on('click', function() {
-    $(this).css('display', 'none'); // 連打防止
+    $(this).css('visibility', 'hidden'); // 連打防止
     
     // 盤上の色を戻す
     resetBoard(colorCode, myPieces);
@@ -412,6 +411,6 @@ function announce(objChat, announce) {
 }
 
 function displayResetButton() {
-  $("#btn-pass").css('display', 'none');
-  $("#btn-reset").css('display', '');
+  $("#btn-pass").css('visibility', 'hidden');
+  $("#btn-reset").css('visibility', 'visible');
 }
