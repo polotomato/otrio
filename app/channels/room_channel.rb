@@ -118,6 +118,7 @@ class RoomChannel < ApplicationCable::Channel
       next_color = "RGPB"[rand(4)]
       next_player_id = setting[next_color]["user_id"]
       next_player_nickname = setting[next_color]["nickname"]
+      next_jpn_color_name = get_jpn_color_name(next_color)
 
       # 棋譜を保存
       kifu = {
@@ -142,7 +143,7 @@ class RoomChannel < ApplicationCable::Channel
       status: 'announce',
       announce: ApplicationController.renderer.render(
         partial: 'rooms/announce',
-        locals: { announce: "【#{next_player_nickname}さんの手番です】" }
+        locals: { announce: "【#{next_jpn_color_name} : #{next_player_nickname}さんの手番です】" }
       )
     }
   end
@@ -181,11 +182,13 @@ class RoomChannel < ApplicationCable::Channel
       i = kifu["order"].index(kifu["next_player_id"])
       i = (i + 1) % 4
       kifu["next_player_id"] = kifu["order"][i]
+      next_jpn_color_name = get_jpn_color_name("RGPB"[i])
 
       next_player_nickname = ""
       "RGPB".split("").each do |color|
         if kifu["setting"][color]["user_id"] == kifu["next_player_id"]
           next_player_nickname = kifu["setting"][color]["nickname"]
+          break
         end
       end
 
@@ -236,7 +239,7 @@ class RoomChannel < ApplicationCable::Channel
         new_record: new_record,
         announce: ApplicationController.renderer.render(
           partial: 'rooms/announce',
-          locals: { announce: "【#{next_player_nickname}さんの手番です】" }
+          locals: { announce: "【#{next_jpn_color_name} : #{next_player_nickname}さんの手番です】" }
         )
       }
     end
@@ -256,6 +259,8 @@ class RoomChannel < ApplicationCable::Channel
       i = kifu["order"].index(kifu["next_player_id"])
       i = (i + 1) % 4
       kifu["next_player_id"] = kifu["order"][i]
+      next_jpn_color_name = get_jpn_color_name("RGPB"[i])
+      next_player_nickname = kifu["setting"]["RGPB"[i]]["nickname"]
 
       # save kifu
       room = Room.find(player.room_id)
@@ -265,10 +270,10 @@ class RoomChannel < ApplicationCable::Channel
       ActionCable.server.broadcast "room_channel_#{room.id}", {
         status: 'next',
         next_player_id: kifu["next_player_id"],
-        new_record: new_record,
+        new_record: kifu["records"][-1],
         announce: ApplicationController.renderer.render(
           partial: 'rooms/announce',
-          locals: { announce: "【#{next_player.nickname}さんの手番です】" }
+          locals: { announce: "【#{next_jpn_color_name} : #{next_player_nickname}さんの手番です】" }
         )
       }
     end
@@ -396,5 +401,15 @@ class RoomChannel < ApplicationCable::Channel
     end
 
     return false
+  end
+
+  def get_jpn_color_name(c)
+    full_color_name = {
+      "R" => "赤",
+      "G" => "緑",
+      "P" => "紫",
+      "B" => "青"
+    }
+    return full_color_name[c]
   end
 end
