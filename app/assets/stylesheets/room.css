@@ -206,6 +206,24 @@ p.p-game-players, p.p-audience {
   border-color: #004E64;
 }
 
+.btn.btn-howToPlay {
+  color: #004E64;
+  background-color: #fff;
+  border-color: #004E64;
+  letter-spacing: 0.05em;
+  border-radius: 0.3rem;
+}
+
+.btn.btn-howToPlay:hover,
+.btn.btn-howToPlay:active,
+.btn.btn-howToPlay:focus,
+.btn.btn-howToPlay.active {
+  /* マウスオーバー時、色反転 */
+  background: #004E64;
+  color: #ffffff;
+  border-color: #004E64;
+}
+
 .gray-rings {
   transition: all 0.3s ease-out;
 }

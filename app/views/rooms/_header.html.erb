@@ -6,7 +6,28 @@
     <%# ルーム内なら部屋番号を表示 %>
     <div><%= "Here is Room #{@room.id}" %></div>
   <% end %>
-  <div class="col-md-3 text-end">
+  <div class="col-md-3 text-end d-flex justify-content-end">
+    <!-- Button trigger modal -->
+    <button type="button" class="btn btn-howToPlay me-4" data-bs-toggle="modal" data-bs-target="#howToPlay">
+      Launch demo modal
+    </button>
+
+    <!-- Modal -->
+    <div class="modal fade" id="howToPlay" tabindex="-1" aria-labelledby="howToPlayLabel" aria-hidden="true">
+      <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="howToPlayLabel">How to play</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body d-flex justify-content-center">
+            <div class="embed-responsive embed-responsive-16by9">
+              <iframe width="800" height="600" src="https://www.youtube.com/embed/7bf2_BjH2IE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
     <%= button_to 'Logout', destroy_user_session_path, method: :delete, class: "btn btn-outline-danger me-2" %>
   </div>
 </div>
