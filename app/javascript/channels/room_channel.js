@@ -239,18 +239,17 @@ $(function() {
 
   // 灰色のリングを押したとき処理
   $('.gray-rings').on('click', function() {
-    // 灰色以外は押せない
-    const color = $(`#${this.id}`).css('fill');
-    if (rgbToHex(color) != colorCode["N"]) return;
+    // 自分の手番以外なら押せない
+    if(canMove === false) return;
+
+    // 4色(不透明)なら押せない
+    if ($(`#${this.id}`).css('fill-opacity') === '1') return;
 
     // 手持ちに無かったら押せない
     const size = this.id[3];
     if (size === "S" && myPieces[0] === 0) return;
     if (size === "M" && myPieces[1] === 0) return;
     if (size === "L" && myPieces[2] === 0) return;
-
-    // 自分の手番以外なら押せない
-    if(canMove === false) return;
 
     // 連打防止
     canMove = false;
@@ -266,6 +265,40 @@ $(function() {
       y: this.id[1],
       size: this.id[3]
     });
+  });
+
+  // 灰色のリングへマウスホバーするとハイライト
+  $('.gray-rings').on({
+    'mouseenter': function() {
+      // 自分の手番以外ならハイライトしない
+      if(canMove === false) return;
+
+      // 4色(不透明)ならハイライトしない
+      const thisRing = $(`#${this.id}`);
+      if (thisRing.css('fill-opacity') === '1') return;
+
+      // 手持ちに無かったらハイライトしない
+      const size = this.id[3];
+      if (size === "S" && myPieces[0] === 0) return;
+      if (size === "M" && myPieces[1] === 0) return;
+      if (size === "L" && myPieces[2] === 0) return;
+
+      // 自分の色にハイライトする
+      thisRing.css('fill', colorCode[myColor]);
+      thisRing.css('fill-opacity', 0.4);
+    },
+    'mouseleave': function() {
+      // 自分の手番以外ならハイライトしない
+      if(canMove === false) return;
+
+      // 4色(不透明)ならハイライトしない
+      const thisRing = $(`#${this.id}`);
+      if (thisRing.css('fill-opacity') === '1') return;
+
+      // 灰色に戻す
+      $(`#${this.id}`).css('fill', colorCode["N"]);
+      $(`#${this.id}`).css('fill-opacity', 0.2);
+    }
   });
 });
 

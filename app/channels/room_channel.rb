@@ -171,6 +171,15 @@ class RoomChannel < ApplicationCable::Channel
         kifu["setting"][user_color]["rings"][size[s]] -= 1
       end
 
+      # cant move if its not a gray ring
+      if kifu["board"][y - 1][x - 1][size[s]] != "N"
+        return ActionCable.server.broadcast "room_channel_#{player.room_id}", {
+          status: 'next',
+          next_player_id: kifu["next_player_id"],
+          new_record: kifu["records"][-1]
+        }
+      end
+
       # update board with new record
       kifu["board"][y - 1][x - 1][size[s]] = user_color
 

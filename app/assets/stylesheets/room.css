@@ -205,3 +205,7 @@ p.p-game-players, p.p-audience {
   color: #ffffff;
   border-color: #004E64;
 }
+
+.gray-rings {
+  transition: all 0.3s ease-out;
+}
