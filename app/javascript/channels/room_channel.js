@@ -33,9 +33,8 @@ $(function() {
 
   // ボードとパスボタンを隠す（入室直後）
   $("#otrio-board").css('display', 'none');
-  // $("#btn-pass").css('visibility', 'hidden');
-  $("#btn-pass").css('display', 'none');
-  $("#btn-reset").css('display', 'none');
+  $("#btn-pass").css('visibility', 'hidden');
+  $("#btn-reset").css('visibility', 'hidden');
 
   const chatChannel = consumer.subscriptions.create({ channel: 'RoomChannel', room: $('#in_room').data('room_id') }, {
     connected() {
@@ -117,17 +116,17 @@ $(function() {
           // display board and hide buttons
           $("#otrio-board").css('display', '');
           $(".seat-row").css('display', 'none');
-          $("#btn-reset").css('display', 'none');
-          $("#btn-pass").css('display', 'none');
+          $("#btn-pass").css('visibility', 'hidden');
+          $("#btn-reset").css('visibility', 'hidden');
 
           if (data['next_player_id'] === current_user_id){
             // allow to move
             canMove = true;
             // allow to pass
-            $("#btn-pass").css('display', '');
+            $("#btn-pass").css('visibility', 'visible');
           } else {
             canMove = false;
-            $("#btn-pass").css('display', 'none');
+            $("#btn-pass").css('visibility', 'hidden');
           }
           break;
 
@@ -139,10 +138,10 @@ $(function() {
             // allow to move
             canMove = true;
             // allow to pass
-            $("#btn-pass").css('display', '');
+            $("#btn-pass").css('visibility', 'visible');
           } else {
             canMove = false;
-            $("#btn-pass").css('display', 'none');
+            $("#btn-pass").css('visibility', 'hidden');
           }
           break;
 
@@ -168,6 +167,19 @@ $(function() {
 
           // display reset button to reset board and display seats
           displayResetButton();
+          break;
+        
+        case 'playing':
+          // update board
+          data['records'].forEach(function(record){
+            updateBoard(record, colorCode);
+          });
+
+          // display board and hide buttons
+          $("#otrio-board").css('display', '');
+          $(".seat-row").css('display', 'none');
+          $("#btn-pass").css('visibility', 'hidden');
+          $("#btn-reset").css('visibility', 'hidden');
           break;
       }
     },
@@ -221,13 +233,13 @@ $(function() {
 
   // パスボタン押下
   $('#btn-pass').on('click', function() {
-    $(this).css('display', 'none'); // 連打防止
+    $(this).css('visibility', 'hidden'); // 連打防止
     chatChannel.perform('pass');
   });
 
   // リセットボタン押下
   $('#btn-reset').on('click', function() {
-    $(this).css('display', 'none'); // 連打防止
+    $(this).css('visibility', 'hidden'); // 連打防止
     
     // 盤上の色を戻す
     resetBoard(colorCode, myPieces);
@@ -240,18 +252,17 @@ $(function() {
 
   // 灰色のリングを押したとき処理
   $('.gray-rings').on('click', function() {
-    // 灰色以外は押せない
-    const color = $(`#${this.id}`).css('fill');
-    if (rgbToHex(color) != colorCode["N"]) return;
+    // 自分の手番以外なら押せない
+    if(canMove === false) return;
+
+    // 4色(不透明)なら押せない
+    if ($(`#${this.id}`).css('fill-opacity') === '1') return;
 
     // 手持ちに無かったら押せない
     const size = this.id[3];
     if (size === "S" && myPieces[0] === 0) return;
     if (size === "M" && myPieces[1] === 0) return;
     if (size === "L" && myPieces[2] === 0) return;
-
-    // 自分の手番以外なら押せない
-    if(canMove === false) return;
 
     // 連打防止
     canMove = false;
@@ -267,6 +278,40 @@ $(function() {
       y: this.id[1],
       size: this.id[3]
     });
+  });
+
+  // 灰色のリングへマウスホバーするとハイライト
+  $('.gray-rings').on({
+    'mouseenter': function() {
+      // 自分の手番以外ならハイライトしない
+      if(canMove === false) return;
+
+      // 4色(不透明)ならハイライトしない
+      const thisRing = $(`#${this.id}`);
+      if (thisRing.css('fill-opacity') === '1') return;
+
+      // 手持ちに無かったらハイライトしない
+      const size = this.id[3];
+      if (size === "S" && myPieces[0] === 0) return;
+      if (size === "M" && myPieces[1] === 0) return;
+      if (size === "L" && myPieces[2] === 0) return;
+
+      // 自分の色にハイライトする
+      thisRing.css('fill', colorCode[myColor]);
+      thisRing.css('fill-opacity', 0.4);
+    },
+    'mouseleave': function() {
+      // 自分の手番以外ならハイライトしない
+      if(canMove === false) return;
+
+      // 4色(不透明)ならハイライトしない
+      const thisRing = $(`#${this.id}`);
+      if (thisRing.css('fill-opacity') === '1') return;
+
+      // 灰色に戻す
+      $(`#${this.id}`).css('fill', colorCode["N"]);
+      $(`#${this.id}`).css('fill-opacity', 0.2);
+    }
   });
 });
 
@@ -291,7 +336,7 @@ function resetBoard(colorCode, myPieces) {
         const grayRing = $(`#${i + 1}${j + 1}N${size}`);
         grayRing.css('fill', colorCode["N"]);
         grayRing.css('fill-opacity', 0.2);
-      });  
+      });
     }
   }
 
@@ -412,6 +457,6 @@ function announce(objChat, announce) {
 }
 
 function displayResetButton() {
-  $("#btn-pass").css('display', 'none');
-  $("#btn-reset").css('display', '');
+  $("#btn-pass").css('visibility', 'hidden');
+  $("#btn-reset").css('visibility', 'visible');
 }
