@@ -168,6 +168,19 @@ $(function() {
           // display reset button to reset board and display seats
           displayResetButton();
           break;
+        
+        case 'playing':
+          // update board
+          data['records'].forEach(function(record){
+            updateBoard(record, colorCode);
+          });
+
+          // display board and hide buttons
+          $("#otrio-board").css('display', '');
+          $(".seat-row").css('display', 'none');
+          $("#btn-pass").css('visibility', 'hidden');
+          $("#btn-reset").css('visibility', 'hidden');
+          break;
       }
     },
 
@@ -323,7 +336,7 @@ function resetBoard(colorCode, myPieces) {
         const grayRing = $(`#${i + 1}${j + 1}N${size}`);
         grayRing.css('fill', colorCode["N"]);
         grayRing.css('fill-opacity', 0.2);
-      });  
+      });
     }
   }
 

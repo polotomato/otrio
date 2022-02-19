@@ -87,12 +87,22 @@ class RoomChannel < ApplicationCable::Channel
     end
   end
 
-  # ゲーム参加者一覧を送信
   def getRoomDetail
+    # ゲーム参加者一覧を送信
     ActionCable.server.broadcast "user_channel_#{current_user.id}", {
       status: 'update-game-players',
       body: getGamePlayers()
     }
+
+    # 対戦中なら状況を送信
+    room = Room.find_by(id: params['room'])
+    if room.present? && room.kifu.present?
+      kifu = JSON.parse(room.kifu)
+      ActionCable.server.broadcast "user_channel_#{current_user.id}", {
+        status: 'playing',
+        records: kifu["records"]
+      }
+    end
   end
 
   # ゲーム開始、初期設定を送信
