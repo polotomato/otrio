@@ -287,9 +287,8 @@ class RoomChannel < ApplicationCable::Channel
 
       # broadcast next player for room
       ActionCable.server.broadcast "room_channel_#{room.id}", {
-        status: 'next',
+        status: 'pass',
         next_player_id: kifu["next_player_id"],
-        new_record: kifu["records"][-1],
         announce: ApplicationController.renderer.render(
           partial: 'rooms/announce',
           locals: { announce: "【#{next_jpn_color_name} : #{next_player_nickname}さんの手番です】" }

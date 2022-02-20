@@ -1,12 +1,11 @@
+<%= audio_tag("addRing.mp3", id:"add-ring-mp3") %>
+<%= audio_tag("yourTurn.mp3", id:"your-turn-mp3") %>
+
 <section class="vh-100" style="background-color: #eee;">
   <div id="in_room" data-room_id="<%= @room.id %>">
     <%= render "header" %>
     <div class="main-container">
       <div class="container-fluid	board">
-
-        <%= render "board" %>
-        <%= button_tag("パス", class: "btn btn-lg btn-pass", id: "btn-pass") %>
-        <%= button_tag("リセット", class: "btn btn-lg btn-reset", id: "btn-reset") %>
         
         <div class="seat-row top-row">
           <div class="seat-container"></div>
@@ -58,6 +57,10 @@
           </div>
           <div class="seat-container"></div>
         </div>
+
+        <%= render "board" %>
+        <%= button_tag("パス", class: "btn btn-lg btn-pass", id: "btn-pass") %>
+        <%= button_tag("リセット", class: "btn btn-lg btn-reset", id: "btn-reset") %>
 
       </div>
       <%= render "user_chat_bar" %>

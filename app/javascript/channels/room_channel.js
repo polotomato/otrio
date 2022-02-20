@@ -116,56 +116,38 @@ $(function() {
           // display board and hide buttons
           $("#otrio-board").css('display', '');
           $(".seat-row").css('display', 'none');
+
+          // for audience
           $("#btn-pass").css('visibility', 'hidden');
           $("#btn-reset").css('visibility', 'hidden');
 
-          if (data['next_player_id'] === current_user_id){
-            // allow to move
-            canMove = true;
-            // allow to pass
-            $("#btn-pass").css('visibility', 'visible');
-          } else {
-            canMove = false;
-            $("#btn-pass").css('visibility', 'hidden');
-          }
+          canMove = allowToMoveAndPassWhenMyTurn(data['next_player_id'], current_user_id);
           break;
 
         case 'next':
-          // update board
           updateBoard(data['new_record'], colorCode);
-          
-          if (data['next_player_id'] === current_user_id){
-            // allow to move
-            canMove = true;
-            // allow to pass
-            $("#btn-pass").css('visibility', 'visible');
-          } else {
-            canMove = false;
-            $("#btn-pass").css('visibility', 'hidden');
-          }
+          canMove = allowToMoveAndPassWhenMyTurn(data['next_player_id'], current_user_id);
+          break;
+
+        case 'pass':          
+          canMove = allowToMoveAndPassWhenMyTurn(data['next_player_id'], current_user_id);
           break;
 
         case 'draw':
-          // update board
           updateBoard(data['new_record'], colorCode);
-
-          // display reset button to reset board and display seats
           displayResetButton();
           break;
 
         case 'abort':
-          // display reset button to reset board and display seats
           displayResetButton();
           break;
 
         case 'win':
-          // update board
           updateBoard(data['new_record'], colorCode);
 
-          // display why to win
+          // display how to win
           winDetail(data['win_detail']);
 
-          // display reset button to reset board and display seats
           displayResetButton();
           break;
         
@@ -459,4 +441,16 @@ function announce(objChat, announce) {
 function displayResetButton() {
   $("#btn-pass").css('visibility', 'hidden');
   $("#btn-reset").css('visibility', 'visible');
+}
+
+function allowToMoveAndPassWhenMyTurn(next_player_id, current_user_id) {
+  if (next_player_id === current_user_id){
+    $("#btn-pass").css('visibility', 'visible');
+    $("#your-turn-mp3").get(0).play();
+    return true;
+  } else {
+    $("#btn-pass").css('visibility', 'hidden');
+    $("#add-ring-mp3").get(0).play();
+    return false;
+  }
 }
