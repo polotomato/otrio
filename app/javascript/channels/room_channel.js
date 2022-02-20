@@ -126,13 +126,15 @@ $(function() {
 
         case 'next':
           updateBoard(data['new_record'], colorCode);
-          
+          canMove = allowToMoveAndPassWhenMyTurn(data['next_player_id'], current_user_id);
+          break;
+
+        case 'pass':          
           canMove = allowToMoveAndPassWhenMyTurn(data['next_player_id'], current_user_id);
           break;
 
         case 'draw':
           updateBoard(data['new_record'], colorCode);
-
           displayResetButton();
           break;
 
