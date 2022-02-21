@@ -218,9 +218,15 @@ class RoomChannel < ApplicationCable::Channel
       # 勝利判定
       result = judge(kifu["board"], new_record)
       if result["status"] == "win"
-        # TODO:
-        # save battle record if someone won
-        #
+        # battle_records テーブルに保存
+        BattleRecord.create(
+          winner_id: current_user.id,
+          red_id:    kifu["setting"]["R"]["user_id"].to_i,
+          green_id:  kifu["setting"]["G"]["user_id"].to_i,
+          purple_id: kifu["setting"]["P"]["user_id"].to_i,
+          blue_id:   kifu["setting"]["B"]["user_id"].to_i,
+          kifu: { "records" => kifu["records"] }.to_json
+        )
 
         # 棋譜の削除
         room.update(kifu: nil)
@@ -239,6 +245,7 @@ class RoomChannel < ApplicationCable::Channel
 
       # 引き分け判定
       if kifu["records"].length == 27
+         # 棋譜の削除
         room.update(kifu: nil)
         ActionCable.server.broadcast "room_channel_#{room.id}", {
           status: 'draw',
