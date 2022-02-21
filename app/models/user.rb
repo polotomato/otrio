@@ -10,4 +10,5 @@ class User < ApplicationRecord
   has_many :messages,     dependent: :destroy
   has_many :room_users,   dependent: :destroy
   has_many :rooms,        through: :room_users
+  has_many :battle_records, foreign_key: :winner_id
 end
