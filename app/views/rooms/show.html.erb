@@ -7,57 +7,28 @@
     <div class="main-container">
       <div class="container-fluid	board">
         
-        <div class="seat-row top-row">
-          <div class="seat-container"></div>
-          <div class="seat-container">
-            <div class="seat-text" data-seat="3" data-user_id="">
-              <p>参加</p>
-              <svg class="seat-rings" height="100%" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" version="1.1" viewBox="0 0 100 100" width="100%" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:vectornator="http://vectornator.io" xmlns:xlink="http://www.w3.org/1999/xlink">
-                <path id="bigger-circle" d="M50 0C22.3858 2.54313e-06 0 22.3858 0 50C0 77.6142 22.3858 100 50 100C77.6142 100 100 77.6142 100 50C100 22.3858 77.6142 0 50 0ZM50 5C74.8528 5 95 25.1472 95 50C95 74.8528 74.8528 95 50 95C25.1472 95 5 74.8528 5 50C5 25.1472 25.1472 5 50 5Z" fill="#660080" opacity="1"/>
-                <path id="middle-circle" d="M50 5C74.8528 5 95 25.1472 95 50C95 74.8528 74.8528 95 50 95C25.1472 95 5 74.8528 5 50C5 25.1472 25.1472 5 50 5Z" fill="#000000" fill-opacity="0.0115369" opacity="1"/>
-              </svg>
+        <div class="table-wrapper">
+          <div class="table-container d-flex justify-content-center">
+            
+            <div class="svg-table-container">
+              <%= render "table" %>
             </div>
-          </div>
-          <div class="seat-container"></div>
-        </div>
-        <div class="seat-row mid-row">
-          <div class="seat-container">
-            <div class="seat-text" data-seat="2" data-user_id="">
-              <p>参加</p>
-              <svg class="seat-rings" height="100%" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" version="1.1" viewBox="0 0 100 100" width="100%" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:vectornator="http://vectornator.io" xmlns:xlink="http://www.w3.org/1999/xlink">
-                <path id="bigger-circle" d="M50 0C22.3858 2.54313e-06 0 22.3858 0 50C0 77.6142 22.3858 100 50 100C77.6142 100 100 77.6142 100 50C100 22.3858 77.6142 0 50 0ZM50 5C74.8528 5 95 25.1472 95 50C95 74.8528 74.8528 95 50 95C25.1472 95 5 74.8528 5 50C5 25.1472 25.1472 5 50 5Z" fill="#00D400" opacity="1"/>
-                <path id="middle-circle" d="M50 5C74.8528 5 95 25.1472 95 50C95 74.8528 74.8528 95 50 95C25.1472 95 5 74.8528 5 50C5 25.1472 25.1472 5 50 5Z" fill="#000000" fill-opacity="0.0115369" opacity="1"/>
-              </svg>
-            </div>
-          </div>
-          <div class="seat-container">
-            <%= button_tag("観戦する", class: "btn btn-lg btn-decline", id: "btn-decline") %>
-            <%= button_tag("スタート", class: "btn btn-lg btn-start-game", id: "btn-start-game") %>
-          </div>
-          <div class="seat-container">
-            <div class="seat-text" data-seat="4" data-user_id="">
-              <p>参加</p>
-              <svg class="seat-rings" height="100%" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" version="1.1" viewBox="0 0 100 100" width="100%" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:vectornator="http://vectornator.io" xmlns:xlink="http://www.w3.org/1999/xlink">
-                <path id="bigger-circle" d="M50 0C22.3858 2.54313e-06 0 22.3858 0 50C0 77.6142 22.3858 100 50 100C77.6142 100 100 77.6142 100 50C100 22.3858 77.6142 0 50 0ZM50 5C74.8528 5 95 25.1472 95 50C95 74.8528 74.8528 95 50 95C25.1472 95 5 74.8528 5 50C5 25.1472 25.1472 5 50 5Z" fill="#00AAD4" opacity="1"/>
-                <path id="middle-circle" d="M50 5C74.8528 5 95 25.1472 95 50C95 74.8528 74.8528 95 50 95C25.1472 95 5 74.8528 5 50C5 25.1472 25.1472 5 50 5Z" fill="#000000" fill-opacity="0.0115369" opacity="1"/>
-              </svg>
-            </div>
-          </div>
-        </div>
-        <div class="seat-row bot-row">
-          <div class="seat-container"></div>
-          <div class="seat-container">
-            <div class="seat-text" data-seat="1" data-user_id="" id="owner-seat">
-              <p>参加</p>
-              <svg class="seat-rings" height="100%" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" version="1.1" viewBox="0 0 100 100" width="100%" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:vectornator="http://vectornator.io" xmlns:xlink="http://www.w3.org/1999/xlink">
-                <path id="bigger-circle" d="M50 0C22.3858 2.54313e-06 0 22.3858 0 50C0 77.6142 22.3858 100 50 100C77.6142 100 100 77.6142 100 50C100 22.3858 77.6142 0 50 0ZM50 5C74.8528 5 95 25.1472 95 50C95 74.8528 74.8528 95 50 95C25.1472 95 5 74.8528 5 50C5 25.1472 25.1472 5 50 5Z" fill="#FF2A2A" opacity="1"/>
-                <path id="middle-circle" d="M50 5C74.8528 5 95 25.1472 95 50C95 74.8528 74.8528 95 50 95C25.1472 95 5 74.8528 5 50C5 25.1472 25.1472 5 50 5Z" fill="#000000" fill-opacity="0.0115369" opacity="1"/>
-              </svg>
-            </div>
-          </div>
-          <div class="seat-container"></div>
-        </div>
 
+            <div class="buttons-row">
+              <div class="join-buttons-container">
+                <%= button_tag("参加", class: "btn btn-lg btn-join btn-join-1", id: "btn-join-1", data: { seat: "1", user_id: "" }) %>
+                <%= button_tag("参加", class: "btn btn-lg btn-join btn-join-2", id: "btn-join-2", data: { seat: "2", user_id: "" }) %>
+                <%= button_tag("参加", class: "btn btn-lg btn-join btn-join-3", id: "btn-join-3", data: { seat: "3", user_id: "" }) %>
+                <%= button_tag("参加", class: "btn btn-lg btn-join btn-join-4", id: "btn-join-4", data: { seat: "4", user_id: "" }) %>
+              </div>
+              <div class="buttons-right-container">
+                <%= button_tag("観戦", class: "btn btn-lg btn-decline", id: "btn-decline") %>
+                <%= button_tag("開始", class: "btn btn-lg btn-start-game", id: "btn-start-game") %>
+              </div>
+            </div>
+
+          </div>
+        </div>
         <%= render "board" %>
         <%= button_tag("パス", class: "btn btn-lg btn-pass", id: "btn-pass") %>
         <%= button_tag("リセット", class: "btn btn-lg btn-reset", id: "btn-reset") %>

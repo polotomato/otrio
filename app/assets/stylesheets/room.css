@@ -119,15 +119,127 @@ p.p-game-players, p.p-audience {
   cursor: pointer;
 }
 
+.table-wrapper {
+  height: 100%;
+  width: 100%;
+}
+
+.table-container {
+  position: relative;
+  height: 100%;
+  width: 100%;
+}
+
+.svg-table-container {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+}
+
+.buttons-row{
+  height: 75px;
+  width: 100%;
+  position: absolute;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.join-buttons-container {
+  height: 75px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.btn.btn-join-1 {
+  color: #FF2A2A;
+  background-color: #fff;
+  border-color: #FF2A2A;
+  letter-spacing: 0.05em;
+  border-radius: 0.3rem;
+  margin-right: 20px;
+}
+
+.btn.btn-join-1:hover,
+.btn.btn-join-1:active,
+.btn.btn-join-1:focus,
+.btn.btn-join-1.active {
+  /* マウスオーバー時、色反転 */
+  background: #FF2A2A;
+  color: #ffffff;
+  border-color: #FF2A2A;
+}
+
+.btn.btn-join-2 {
+  color: #00D400;
+  background-color: #fff;
+  border-color: #00D400;
+  letter-spacing: 0.05em;
+  border-radius: 0.3rem;
+  margin-right: 20px;
+}
+
+.btn.btn-join-2:hover,
+.btn.btn-join-2:active,
+.btn.btn-join-2:focus,
+.btn.btn-join-2.active {
+  /* マウスオーバー時、色反転 */
+  background: #00D400;
+  color: #ffffff;
+  border-color: #00D400;
+}
+
+.btn.btn-join-3 {
+  color: #660080;
+  background-color: #fff;
+  border-color: #660080;
+  letter-spacing: 0.05em;
+  border-radius: 0.3rem;
+  margin-right: 20px;
+}
+
+.btn.btn-join-3:hover,
+.btn.btn-join-3:active,
+.btn.btn-join-3:focus,
+.btn.btn-join-3.active {
+  /* マウスオーバー時、色反転 */
+  background: #660080;
+  color: #ffffff;
+  border-color: #660080;
+}
+
+.btn.btn-join-4 {
+  color: #00AAD4;
+  background-color: #fff;
+  border-color: #00AAD4;
+  letter-spacing: 0.05em;
+  border-radius: 0.3rem;
+  margin-right: 20px;
+}
+
+.btn.btn-join-4:hover,
+.btn.btn-join-4:active,
+.btn.btn-join-4:focus,
+.btn.btn-join-4.active {
+  /* マウスオーバー時、色反転 */
+  background: #00AAD4;
+  color: #ffffff;
+  border-color: #00AAD4;
+}
+
+.buttons-right-container {
+  display: flex;
+  align-items: center;
+}
+
 .btn.btn-decline {
   width: 50%;
   color: #004E64;
   background-color: #fff;
   border-color: #004E64;
-  font-weight: bold;
   letter-spacing: 0.05em;
   border-radius: 0.3rem;
-  margin-bottom: 5%;
 }
 
 .btn.btn-decline:hover,
@@ -145,7 +257,6 @@ p.p-game-players, p.p-audience {
   color: #004E64;
   background-color: #fff;
   border-color: #004E64;
-  font-weight: bold;
   letter-spacing: 0.05em;
   border-radius: 0.3rem;
 }

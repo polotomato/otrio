@@ -310,7 +310,7 @@ class RoomChannel < ApplicationCable::Channel
     array = {}
     players = GamePlayer.where("room_id = ?", params['room'])
     players.each do |player|
-      array[player.seat] = [player.user_id, User.find(player.user_id).nickname] 
+      array[player.seat] = player.user_id
     end
     return array
   end
