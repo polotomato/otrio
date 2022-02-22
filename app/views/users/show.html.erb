@@ -1,0 +1,62 @@
+<div class="vh-100" style="background-color: #eee;">
+  <div id="in_user_page" data-user_id="<%= @user.id %>">
+
+    <%= render "rooms/header" %>
+
+    <div class="mypage-user-name ps-3">
+      <%= @user.nickname %>
+    </div>
+
+    <div class="win-rate mb-1 ps-3 py-1">
+      <p><%= "勝利数 : #{@count_wins}" %></p>
+      <p><%= "試合数 : #{@records.size}" %></p>
+      <% if @records.size > 0 %>
+        <p><%= "勝　率 : #{(@count_wins * 100.0 / @records.size).round(1)}%" %></p>
+      <% end %>
+    </div>
+
+    <% if @records.size > 0 %>
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th scope="col" class="ps-3">勝敗</th>
+            <th scope="col" class="ps-3">赤</th>
+            <th scope="col" class="ps-3">緑</th>
+            <th scope="col" class="ps-3">紫</th>
+            <th scope="col" class="ps-3">青</th>
+            <th scope="col" class="ps-3">日付</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @records.each do |r| %>
+            <tr>
+              <th scope="row">
+                <% if r.winner.id == @user.id %>
+                  <%# マル %>
+                  <div class="ps-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-circle" viewBox="0 0 16 16">
+                      <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                    </svg>
+                  </div>
+                <% else %>
+                  <%# バツ %>
+                  <div class="ps-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
+                      <path fill-rule="evenodd" d="M13.854 2.146a.5.5 0 0 1 0 .708l-11 11a.5.5 0 0 1-.708-.708l11-11a.5.5 0 0 1 .708 0Z"/>
+                      <path fill-rule="evenodd" d="M2.146 2.146a.5.5 0 0 0 0 .708l11 11a.5.5 0 0 0 .708-.708l-11-11a.5.5 0 0 0-.708 0Z"/>
+                    </svg>
+                  </div>
+                <% end %>
+              </th>
+              <td class="ps-3"><%= r.red.nickname %></td>
+              <td class="ps-3"><%= r.green.nickname %></td>
+              <td class="ps-3"><%= r.purple.nickname %></td>
+              <td class="ps-3"><%= r.blue.nickname %></td>
+              <td class="ps-3"><%= r.created_at.in_time_zone('Tokyo').strftime('%Y/%m/%d %H:%M:%S') %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% end %>
+  </div>
+</div>

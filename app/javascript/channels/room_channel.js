@@ -1,6 +1,5 @@
 import consumer from "./consumer"
 
-// $(function() { ... }); で囲むことでレンダリング後に実行される
 $(function() {
   if ($('#in_room').length === 0) return;
 
@@ -31,10 +30,11 @@ $(function() {
   // 現在の盤上の色
   resetBoard(colorCode, myPieces);
 
-  // ボードとパスボタンを隠す（入室直後）
+  // ボードを隠す（入室直後）
   $("#otrio-board").css('display', 'none');
-  $("#btn-pass").css('visibility', 'hidden');
-  $("#btn-reset").css('visibility', 'hidden');
+  $('#btn-reset').css('visibility', 'hidden');
+  $('#btn-start-game').css('visibility', 'hidden');
+
 
   const chatChannel = consumer.subscriptions.create({ channel: 'RoomChannel', room: $('#in_room').data('room_id') }, {
     connected() {
@@ -74,38 +74,44 @@ $(function() {
           break;
 
         case 'update-game-players':
+          $(".table-wrapper").css('display', '');
+          $("#btn-reset").css('visibility', 'hidden');
+
           // 4つの席を全て再表示
           const body = data['body'];
           const gamePlayerIDs = [];
           for(let i = 1; i <= 4; i++) {
-            const seat = $(`[data-seat=${i}]`);
-            const p = $(`[data-seat=${i}] > p`)
+            const svgPlayer = $(`#svg_player_${i}`);
+            const btnJoin = $(`#btn-join-${i}`);
             if (body[`${i}`] === undefined) {
-              seat.attr('data-user_id', "");
-              p.text("参加");
+              // 空席
+              svgPlayer.css('visibility', 'hidden');
+              btnJoin.css('visibility', 'visible');
+              btnJoin.attr('data-user_id', "");
               seatAvailable[i] = true;
             } else {
-              const user_id  = body[`${i}`][0]
-              const nickname = body[`${i}`][1]
-              seat.attr('data-user_id', `${user_id}`);
-              p.text(`${nickname}`);
+              // 満席
+              const user_id = body[`${i}`];
+              svgPlayer.css('visibility', 'visible');
+              btnJoin.css('visibility', 'hidden');
+              btnJoin.attr('data-user_id', `${user_id}`);
               seatAvailable[i] = false;
               gamePlayerIDs.push(user_id.toString());
             }
           }
           // 自分がプレイヤーなら、観戦ボタンを表示
           if (gamePlayerIDs.includes(current_user_id)) {
-            $('#btn-decline').css('display', '');
+            $('#btn-decline').css('visibility', 'visible');
           } else {
-            $('#btn-decline').css('display', 'none');
+            $('#btn-decline').css('visibility', 'hidden');
           }
 
           // プレイヤー4人着席で、seat-1のプレイヤーに開始ボタンを表示
-          const owner_id = $('#owner-seat').attr('data-user_id');
+          const owner_id = $('#btn-join-1').attr('data-user_id');
           if (owner_id === current_user_id && seatAvailable.every(v => v === false)) {
-            $('#btn-start-game').css('display', '');
+            $('#btn-start-game').css('visibility', 'visible');
           } else {
-            $('#btn-start-game').css('display', 'none');
+            $('#btn-start-game').css('visibility', 'hidden');
           }
           break;
 
@@ -115,7 +121,7 @@ $(function() {
 
           // display board and hide buttons
           $("#otrio-board").css('display', '');
-          $(".seat-row").css('display', 'none');
+          $(".table-wrapper").css('display', 'none');
 
           // for audience
           $("#btn-pass").css('visibility', 'hidden');
@@ -159,7 +165,7 @@ $(function() {
 
           // display board and hide buttons
           $("#otrio-board").css('display', '');
-          $(".seat-row").css('display', 'none');
+          $(".table-wrapper").css('display', 'none');
           $("#btn-pass").css('visibility', 'hidden');
           $("#btn-reset").css('visibility', 'hidden');
           break;
@@ -190,8 +196,8 @@ $(function() {
   });
 
   // 参加ボタン押下
-  $('.seat-rings').on('click', function() {
-    const i =  $(this).parent().data('seat'); // seat number
+  $('.btn-join').on('click', function() {
+    const i =  $(this).data('seat'); // seat number
     if (seatAvailable[i]) {
       seatAvailable[i] = false; // 連打防止
       const colors = {1: "R", 2: "G", 3: "P", 4: "B"}
@@ -202,14 +208,14 @@ $(function() {
 
   // 観戦するボタン押下
   $('#btn-decline').on('click', function() {
-      $(this).css('display', 'none'); // 連打防止
+      $(this).css('visibility', 'hidden'); // 連打防止
       myColor = "N"
       chatChannel.perform('decline');
   });
   
   // ゲーム開始ボタン押下
   $('#btn-start-game').on('click', function() {
-      $(this).css('display', 'none'); // 連打防止
+      $(this).css('visibility', 'hidden'); // 連打防止
       chatChannel.perform('startGame');
   });
 
@@ -227,7 +233,7 @@ $(function() {
     resetBoard(colorCode, myPieces);
 
     $("#otrio-board").css('display', 'none');
-    $(".seat-row").css('display', '');
+    $(".table-wrapper").css('display', '');
 
     chatChannel.perform('getRoomDetail');
   });
@@ -351,9 +357,6 @@ function updateBoard(record, colorCode) {
 
   // 手持ちから1つ消す
   for (let i = 1; i <= 3; i++) {
-    console.log(`#${color}${size}${i}`);
-    console.log($(`#${color}${size}${i}`).css('fill-opacity'));
-    console.log($(`#${color}${size}${i}`).css('fill-opacity') === "1");
     if ($(`#${color}${size}${i}`).css('fill-opacity') === "1") {
       $(`#${color}${size}${i}`).css('fill-opacity', 0);
       return;
@@ -388,49 +391,6 @@ function winDetail(detail) {
   detail.forEach(function (ID) {
     $(`#${ID}`).css('fill-opacity', 1);
   });
-}
-
-function rgbToHex(color)
-{
-  // HEXに変換したものを代入する変数
-  var hex = '#';
-  
-  // 第1引数がHEXのとき変換処理は必要ないのでそのままreturn
-  // IE8の場合はjQueryのcss()関数でHEXを返すので除外
-  if (color.match(/^#[a-f\d]{3}$|^#[a-f\d]{6}$/i))
-  {
-    return color;
-  }
-  
-  // 正規表現
-  var regex = color.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
-  
-  // 正規表現でマッチしたとき
-  if (regex)
-  {
-    var rgb =
-    [
-      // RGBからHEXへ変換
-      parseInt(regex[1]).toString(16),
-      parseInt(regex[2]).toString(16),
-      parseInt(regex[3]).toString(16)
-    ];
-    
-    for (var i = 0; i < rgb.length; ++i)
-    {
-      // rgb(1,1,1)のようなときHEXに変換すると1桁になる
-      // 1桁のときは前に0を足す
-      if (rgb[i].length == 1)
-      {
-        rgb[i] = '0' + rgb[i];
-      }
-      hex += rgb[i];
-    }
-    
-    return hex;
-  }
-  
-  console.error('第1引数はRGB形式で入力');
 }
 
 function announce(objChat, announce) {
