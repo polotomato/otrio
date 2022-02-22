@@ -2,7 +2,7 @@
   height: 50px;
   background-color: white;
   display: flex;
-  justify-content: space-between;
+  justify-content: end;
   align-items: center;
 }
 
@@ -12,5 +12,5 @@
 }
 
 .error-message {
-  color: red
+  color: red;
 }

@@ -1,12 +1,11 @@
-<div class="header mb-1">
-  <%# ロビーならロー専用のタイトルを表示 %>
-  <% if @room.nil? %>
-    <div>Here is lobby</div>
-  <% else %>
+<div class="header mb-1 d-flex justify-content-between">
+  <% if @room %>
     <%# ルーム内なら部屋番号を表示 %>
-    <div><%= "Here is Room #{@room.id}" %></div>
+    <div class="header-title ms-3"><%= "Here is Room #{@room.id}" %></div>
+  <% else %>
+    <div class="header-title ms-3"></div>
   <% end %>
-  <div class="col-md-3 text-end d-flex justify-content-end">
+  <div class="text-end d-flex justify-content-end">
     <!-- Button trigger modal -->
     <button type="button" class="btn btn-howToPlay me-4" data-bs-toggle="modal" data-bs-target="#howToPlay">
       How to play
