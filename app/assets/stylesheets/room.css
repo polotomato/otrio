@@ -86,39 +86,6 @@ p.p-game-players, p.p-audience {
   background-color: lightblue;
 }
 
-.seat-row {
-  display: flex;
-  justify-content: space-around;
-}
-
-.top-row, .mid-row, .bot-row {
-  height: 33%;
-}
-
-.seat-container {
-  width: 30vmin;
-  height: 30vmin;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-}
-
-.seat-text {
-  font-size: 3vmin;
-}
-
-.seat-rings {
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-
-#middle-circle {
-  cursor: pointer;
-}
-
 .table-wrapper {
   height: 100%;
   width: 100%;
@@ -337,4 +304,8 @@ p.p-game-players, p.p-audience {
 
 .gray-rings {
   transition: all 0.3s ease-out;
+}
+
+.mypage-user-name {
+  font-weight: bold;
 }
