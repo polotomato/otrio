@@ -16,6 +16,23 @@ Pass:1234
 * 入室直後は観戦状態です。4つの色のうち1つを選び、該当色の参加ボタンを押してください。
 * 4人プレイヤーが参加すると、赤い色として参加したプレイヤーにのみ「開始」ボタンが表示されます。「開始」を押すとゲームが開始します。
 
+## 動作例
+### トップ画面からログイン直後まで
+[![Image from Gyazo](https://i.gyazo.com/d6b7e960e890c3404871de799fcd8e82.gif)](https://gyazo.com/d6b7e960e890c3404871de799fcd8e82)
+
+### 入室からゲーム開始まで
+[![Image from Gyazo](https://i.gyazo.com/e7678b85e459a742cd785bc92a44ce54.gif)](https://gyazo.com/e7678b85e459a742cd785bc92a44ce54)
+
+[![Image from Gyazo](https://i.gyazo.com/cee76dff13b624ee13992b6c2981bbb6.gif)](https://gyazo.com/cee76dff13b624ee13992b6c2981bbb6)
+
+### ゲーム中の様子
+[![Image from Gyazo](https://i.gyazo.com/3d0f4166a58f03fd2469bf183a175212.gif)](https://gyazo.com/3d0f4166a58f03fd2469bf183a175212)
+
+[![Image from Gyazo](https://i.gyazo.com/7a83b31b5a320a878a3cb6bc25997100.gif)](https://gyazo.com/7a83b31b5a320a878a3cb6bc25997100)
+
+### 勝利時の様子
+[![Image from Gyazo](https://i.gyazo.com/a2c046000d768367a648cee4ac275a13.gif)](https://gyazo.com/a2c046000d768367a648cee4ac275a13)
+
 ## アプリケーションを作成した背景
 コロナで行動制限がかかり、実際に会ってプレイすることが難しくなったことを解決したかった。
 
